@@ -11,6 +11,7 @@
 #include "DisplayChunk.h"
 #include "ChunkObject.h"
 #include "InputCommands.h"
+#include "ArcCamera.h"
 #include <vector>
 
 
@@ -73,11 +74,12 @@ private:
 	float								m_movespeed;
 
 	//camera
-	DirectX::SimpleMath::Vector3		m_camPosition;
-	DirectX::SimpleMath::Vector3		m_camOrientation;
-	DirectX::SimpleMath::Vector3		m_camLookAt;
-	DirectX::SimpleMath::Vector3		m_camLookDirection;
-	DirectX::SimpleMath::Vector3		m_camRight;
+	std::unique_ptr<ArcCamera>			m_camera;
+	
+	// Mouse Controls
+	float mouseX;
+	float mouseY;
+
 	float m_camRotRate;
 
 	//control variables

@@ -1,0 +1,5 @@
+﻿  ArcCamera.cpp
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ArcCamera.cpp(55,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ArcCamera.cpp(56,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ArcCamera.cpp(57,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Win32SimpleSample.vcxproj -> D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Debug\WoFEdit.exe
