@@ -26,7 +26,7 @@ Game::Game()
 
 	//functional
 	m_movespeed = 0.30;
-	m_camRotRate = 3.0;
+	m_camRotRate = 1.0;
 
 	//camera
     
@@ -113,6 +113,8 @@ void Game::Tick(InputCommands *Input)
         Update(m_timer);
     });
 
+    m_camera->Tick(Input);
+
 #ifdef DXTK_AUDIO
     // Only update audio engine once per frame
     if (!m_audEngine->IsCriticalError() && m_audEngine->Update())
@@ -132,41 +134,8 @@ void Game::Update(DX::StepTimer const& timer)
 
     // Get current mouse state
     DirectX::Mouse::State mouseState = m_mouse->GetState();
-
-    mouseX = static_cast<float>(mouseState.x) - m_InputCommands.mouseDeltaX;
-    mouseY = static_cast<float>(mouseState.y) - m_InputCommands.mouseDeltaY;
     
-
-    if (m_InputCommands.rightMousePressed) // normal rotation on right press.
-    {
-        if (mouseX < -0.5f || mouseX > 0.5)
-        {
-            m_camera->Rotate(mouseX * 0.1f, 0.f);
-        }
-        if (mouseY < -0.5f || mouseY > 0.5)
-        {
-            m_camera->Rotate(0.0f, -mouseY * 0.1f);
-        }
-    }
-    else if (m_InputCommands.leftMousePressed) // add functionality to pivot around a point on left press.
-    {
-
-    }
-	
-
-	//process input and update stuff
-    Vector3 movement = Vector3::Zero;
-
-    movement.z += (m_InputCommands.forward ? 1.0f : 0.0f);
-    movement.z -= (m_InputCommands.back ? 1.0f : 0.0f);
-    movement.x += (m_InputCommands.right ? 1.0f : 0.0f);
-    movement.x -= (m_InputCommands.left ? 1.0f : 0.0f);
-    movement.y += (m_InputCommands.down ? 1.0f : 0.0f);
-    movement.y -= (m_InputCommands.up ? 1.0f : 0.0f);
-
-    movement.Normalize();
-
-    m_camera->Move(movement);
+    m_camera->Update(timer);
 
 	//apply camera vectors
     m_view = m_camera->GetViewMatrix();

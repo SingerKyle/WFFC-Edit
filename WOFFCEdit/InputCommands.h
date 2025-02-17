@@ -16,8 +16,6 @@ struct InputCommands
 	bool rightMousePressed;
 
 	// Camera movement - mouse
-	float mouseDeltaX;
-	float mouseDeltaY;
-	float prevMouseX;
-	float prevMouseY;
+	int mouseDeltaX;
+	int mouseDeltaY;
 };

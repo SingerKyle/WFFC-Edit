@@ -315,17 +315,10 @@ void ToolMain::UpdateInput(MSG* msg)
 		mouseX = GET_X_LPARAM(msg->lParam);
 		mouseY = GET_Y_LPARAM(msg->lParam);
 
-		if (mouseX != m_toolInputCommands.prevMouseX || mouseY != m_toolInputCommands.prevMouseY)
-		{
-			// Calculate the mouse deltas
-			m_toolInputCommands.mouseDeltaX = static_cast<float>(mouseX) - m_toolInputCommands.prevMouseX;
-			m_toolInputCommands.mouseDeltaY = static_cast<float>(mouseY) - m_toolInputCommands.prevMouseY;
+		// Calculate the mouse deltas
+		m_toolInputCommands.mouseDeltaX = mouseX;
+		m_toolInputCommands.mouseDeltaY = mouseY;
 
-			// Update previous mouse position for next frame
-			m_toolInputCommands.prevMouseX = static_cast<float>(mouseX);
-			m_toolInputCommands.prevMouseY = static_cast<float>(mouseY);
-
-		}
 		break;
 
 	case WM_LBUTTONDOWN:	//Left Mouse Button Down
@@ -338,10 +331,12 @@ void ToolMain::UpdateInput(MSG* msg)
 
 	case WM_RBUTTONDOWN: // Right Mouse Button Down
 		m_toolInputCommands.rightMousePressed = true;
+		SetCapture(msg->hwnd);
 		break;
 
 	case WM_RBUTTONUP: // Right Mouse Button Up
 		m_toolInputCommands.rightMousePressed = false;
+		ReleaseCapture();
 		break;
 
 	case WM_MBUTTONDOWN: // Middle Mouse Button Down
@@ -386,16 +381,6 @@ void ToolMain::UpdateInput(MSG* msg)
 	}
 	else m_toolInputCommands.right = false;
 	//rotation
-	if (m_keyArray['E'])
-	{
-		m_toolInputCommands.rotRight = true;
-	}
-	else m_toolInputCommands.rotRight = false;
-	if (m_keyArray['Q'])
-	{
-		m_toolInputCommands.rotLeft = true;
-	}
-	else m_toolInputCommands.rotLeft = false;
 	if (m_keyArray[VK_SPACE])
 	{
 		m_toolInputCommands.up = true;
