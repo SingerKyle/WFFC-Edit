@@ -25,6 +25,14 @@ public: //methods
 	afx_msg	void			onActionSave();													//save the current chunk
 	afx_msg void			onActionSaveTerrain();											//save chunk geometry
 
+	void ResizeWindow(int width, int height);
+
+	// Used to update camera variables from dialogue box
+	void					UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls);
+	inline int				GetWidth() { return m_width; }
+	inline int				GetHeight() { return m_height; }
+	inline std::shared_ptr<ArcCamera> GetCamera() { return m_d3dRenderer.GetCamera(); }
+
 	void	Tick(MSG *msg);
 	void	UpdateInput(MSG *msg);
 

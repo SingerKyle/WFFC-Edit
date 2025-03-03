@@ -10,6 +10,7 @@
 #include "MFCFrame.h"
 #include "SelectDialogue.h"
 #include "ObjectEditDialogue.h"
+#include "EditorSettingsDialogue.h"
 
 
 class MFCMain : public CWinApp 
@@ -28,6 +29,7 @@ private:
 	CRect WindowRECT;	//Window area rectangle. 
 	SelectDialogue m_ToolSelectDialogue;			//for modeless dialogue, declare it here
 	ObjectEditDialogue m_ToolEditObjectDialogue;
+	EditorSettingsDialogue m_ToolEditorSettings;
 
 	int m_width;		
 	int m_height;
@@ -41,6 +43,7 @@ private:
 	afx_msg void Undo();
 	afx_msg void Redo();
 	afx_msg void EditObjectTransform();
+	afx_msg void EditorSettings();
 
 
 	DECLARE_MESSAGE_MAP()	// required macro for message map functionality  One per class

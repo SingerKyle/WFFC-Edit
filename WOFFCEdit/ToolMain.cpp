@@ -46,6 +46,8 @@ void ToolMain::onActionInitialise(HWND handle, int width, int height)
 	m_width = width;
 	m_height = height;
 
+	m_toolHandle = handle;
+
 	m_d3dRenderer.Initialize(handle, m_width, m_height);
 
 	//database connection establish
@@ -283,6 +285,16 @@ void ToolMain::onActionSaveTerrain()
 	m_d3dRenderer.SaveDisplayChunk(&m_chunk);
 }
 
+void ToolMain::ResizeWindow(int width, int height)
+{
+	m_d3dRenderer.OnWindowSizeChanged(width, height);
+}
+
+void ToolMain::UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls)
+{
+	m_d3dRenderer.GetCamera()->UpdateCamValues(moveSpeed, camRotRate, invertControls);
+}
+
 void ToolMain::Tick(MSG* msg)
 {
 	//do we have a selection
@@ -293,12 +305,19 @@ void ToolMain::Tick(MSG* msg)
 		//add to scenegraph
 		//resend scenegraph to Direct X renderer
 
+	CWnd* myDXFrame = CWnd::FromHandle(m_toolHandle);
+	CRect dxViewRect;
+	myDXFrame->GetWindowRect(dxViewRect);
+
+	m_d3dRenderer.SetScreenDimensions(dxViewRect);
+
 	//Renderer Update Call
 	m_d3dRenderer.Tick(&m_toolInputCommands);
 
 	if (m_toolInputCommands.leftMousePressed && !m_toolInputCommands.leftMouseHeld)
 	{
 		m_selectedObjects = m_d3dRenderer.MousePicking();
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
 		m_toolInputCommands.leftMousePressed = false;
 
 		/*if (m_selectedObjects.empty())

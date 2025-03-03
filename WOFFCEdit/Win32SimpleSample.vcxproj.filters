@@ -65,6 +65,9 @@
     <ClCompile Include="ObjectEditDialogue.cpp">
       <Filter>MFC</Filter>
     </ClCompile>
+    <ClCompile Include="EditorSettingsDialogue.cpp">
+      <Filter>MFC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h">
@@ -118,6 +121,9 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="ObjectEditDialogue.h">
+      <Filter>MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSettingsDialogue.h">
       <Filter>MFC</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,6 +20,8 @@ ArcCamera::ArcCamera(float moveSpeed, float rotationSpeed, DirectX::SimpleMath::
 
     m_distance = 10.0f;
 
+    m_invertControls = false;
+
     CalculateVectors();
 }
 
@@ -126,12 +128,21 @@ void ArcCamera::MoveCam(float dt)
     if (m_InputCommands.rightMousePressed)
     {
         int xDelta = m_mouseXPrev - m_mouseXCurrent;
-        m_orientation.y += xDelta * m_camRotRate * dt;
-
         int yDelta = m_mouseYPrev - m_mouseYCurrent;
+
+        if (m_invertControls)
+        {
+            xDelta = -xDelta;
+            yDelta = -yDelta;
+        }
+
+        m_orientation.y += xDelta * m_camRotRate * dt;
+        
         m_orientation.x += yDelta * m_camRotRate * dt;
         m_orientation.x = std::min(m_orientation.x, 89.f);
         m_orientation.x = std::max(m_orientation.x, -89.f);
+
+        
     }
 
     CalculateVectors();
@@ -182,6 +193,13 @@ void ArcCamera::CalculateVectors()
     // Create right and up vectors from look Direction
     m_lookDirection.Cross(DirectX::SimpleMath::Vector3::UnitY, m_rightVector);
     m_lookDirection.Cross(m_rightVector, m_upVector);
+}
+
+void ArcCamera::UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls)
+{
+    m_moveSpeed = moveSpeed;
+    m_camRotRate = camRotRate;
+    m_invertControls = invertControls;
 }
 
 DirectX::SimpleMath::Matrix ArcCamera::GetViewMatrix() const

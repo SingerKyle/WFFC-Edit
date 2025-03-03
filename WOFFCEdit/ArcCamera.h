@@ -28,7 +28,13 @@ public:
 	// Updates
 	void CalculateVectors();
 
+	void UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls);
+
 	// Getters & Setters
+	inline float GetMoveSpeed() { return m_moveSpeed; }
+	inline float GetRotRate() { return m_camRotRate; }
+	inline bool GetIsInverted() { return m_invertControls; }
+
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 
 	DirectX::SimpleMath::Vector3 GetOrientation() const { return m_orientation; }
@@ -39,6 +45,8 @@ public:
 	// Generate view matrix for rendering
 	DirectX::SimpleMath::Matrix GetViewMatrix() const;
 private:
+	RECT									m_viewPortDimensions;
+
 	// Input Commands
 	InputCommands							m_InputCommands;
 
@@ -61,6 +69,9 @@ private:
 	float									m_moveSpeed;
 	// rotate speed
 	float									m_camRotRate;
+
+	// invert camera controls
+	bool									m_invertControls;
 
 	// Rotation around Y-axis (longitude)
 	float									m_yaw;    

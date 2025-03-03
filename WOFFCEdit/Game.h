@@ -52,6 +52,11 @@ public:
 	void SaveDisplayChunk(ChunkObject *SceneChunk);	//saves geometry et al
 	void ClearDisplayList();
 
+	inline void SetScreenDimensions(RECT viewportDimensions) { m_ScreenDimensions = viewportDimensions; }
+
+	// getters for dialogue boxes
+	inline std::shared_ptr<ArcCamera> GetCamera() { return m_camera; };
+
 	std::vector<int> MousePicking();
 
 #ifdef DXTK_AUDIO
@@ -79,7 +84,7 @@ private:
 	RECT								m_ScreenDimensions;
 
 	//camera
-	std::unique_ptr<ArcCamera>			m_camera;
+	std::shared_ptr<ArcCamera>			m_camera;
 	
 	// Mouse Controls
 	float mouseX;

@@ -32,12 +32,20 @@ Game::Game()
 	//camera
     
 	// Maybe don't need to include all of the 0 vector3's, ask in lab.
-	m_camera = std::make_unique<ArcCamera>(m_movespeed, m_camRotRate, 
+	/*m_camera = std::make_unique<ArcCamera>(m_movespeed, m_camRotRate,
         Vector3(0.0f, 3.7f, -3.5f),  
         Vector3::Zero,   
         Vector3::Zero,   
         Vector3(0.f,0.f,1.f),
         Vector3::Zero 
+    );*/
+
+    m_camera = std::make_shared<ArcCamera>(m_movespeed, m_camRotRate,
+        Vector3(0.0f, 3.7f, -3.5f),
+        Vector3::Zero,
+        Vector3::Zero,
+        Vector3(0.f, 0.f, 1.f),
+        Vector3::Zero
     );
 
     mouseX = 0.0f;
@@ -145,7 +153,6 @@ void Game::Update(DX::StepTimer const& timer)
     }
     else
     {
-        // Assuming m_selectedObjects.size() is of type size_t (or unsigned int)
         //size_t size = m_selectedObjects.size();
         //bool status = m_InputCommands.leftMouseHeld;
         //wchar_t buffer[256]; // Make sure the buffer is large enough
@@ -238,7 +245,7 @@ void Game::Render()
 
 		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
 
-		m_displayList[i].m_model->Draw(context, *m_states, local, m_view, m_projection, false);	//last variable in draw,  make TRUE for wireframe
+		m_displayList[i].m_model->Draw(context, *m_states, local, m_view, m_projection, m_displayList[i].m_wireframe);	//last variable in draw,  make TRUE for wireframe
 
 		m_deviceResources->PIXEndEvent();
 	}
@@ -353,14 +360,13 @@ void Game::OnResuming()
 
 void Game::OnWindowSizeChanged(int width, int height)
 {
-
     // For some reason the window changing sizes messes with the selection, need to fix!
 
     if (!m_deviceResources->WindowSizeChanged(width, height))
         return;
 
-    m_ScreenDimensions.right = width;
-    m_ScreenDimensions.left = height;
+    //m_ScreenDimensions.right = width;
+    //m_ScreenDimensions.bottom = height;
 
     CreateWindowSizeDependentResources();
 }
@@ -440,7 +446,34 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		newDisplayObject.m_light_quadratic	= SceneGraph->at(i).light_quadratic;
 		
 		m_displayList.push_back(newDisplayObject);
+
+        // Effect for object selection.
+        // https://github.com/microsoft/DirectXTK/wiki/Effects
 		
+        if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
+        {
+            DisplayObject objectHighlight = newDisplayObject;
+
+            objectHighlight.m_ID = -1;
+            objectHighlight.m_wireframe = true;
+
+            objectHighlight.m_model->UpdateEffects([&](IEffect* effect)
+                {
+                    auto fog = dynamic_cast<IEffectFog*>(effect);
+
+                    if (fog) {
+                        fog->SetFogEnabled(true);
+                        fog->SetFogStart(0);
+                        fog->SetFogEnd(0); // 0,0 for one object distance irrelevant as incressed math will slow down the program;
+
+                        fog->SetFogColor(Colors::GhostWhite);
+
+                    }
+                });
+
+            m_displayList.push_back(objectHighlight);
+        }
+
 	}
 		
 		

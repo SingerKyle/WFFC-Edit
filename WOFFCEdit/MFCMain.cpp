@@ -8,6 +8,7 @@ BEGIN_MESSAGE_MAP(MFCMain, CWinApp)
 	ON_COMMAND(ID_EDIT_SELECT, &MFCMain::MenuEditSelect)
 	ON_COMMAND(ID_BUTTON40001,	&MFCMain::ToolBarButton1)
 	ON_COMMAND(ID_BUTTON40007, &MFCMain::EditObjectTransform)
+	ON_COMMAND(ID_SETTINGS_EDITOR_SETTINGS, &MFCMain::EditorSettings)
 	ON_COMMAND(ID_EDIT_UNDO, &MFCMain::Undo)
 	ON_COMMAND(ID_EDIT_REDO, &MFCMain::Redo)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_TOOL, &CMyFrame::OnUpdatePage)
@@ -22,7 +23,7 @@ BOOL MFCMain::InitInstance()
 	m_frame->Create(	NULL,
 					_T("World Of Flim-Flam Craft Editor"),
 					WS_OVERLAPPEDWINDOW,
-					CRect(100, 100, 1920, 1080),
+					CRect(100, 100, 1024, 768),
 					NULL,
 					NULL,
 					0,
@@ -152,6 +153,13 @@ void MFCMain::EditObjectTransform()
 	m_ToolEditObjectDialogue.Create(IDD_OBJECTTRANSFORM);
 	m_ToolEditObjectDialogue.ShowWindow(SW_SHOW);
 	m_ToolEditObjectDialogue.GrabCurrentSelectedObject(&m_ToolSystem.m_sceneGraph);
+}
+
+void MFCMain::EditorSettings()
+{
+	m_ToolEditorSettings.Create(IDD_EDITOR_SETTINGS);	//Start up modeless
+	m_ToolEditorSettings.ShowWindow(SW_SHOW);	//show modeless
+	m_ToolEditorSettings.SetObjectData(&m_ToolSystem);
 }
 
 
