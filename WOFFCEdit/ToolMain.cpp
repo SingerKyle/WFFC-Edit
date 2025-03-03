@@ -385,7 +385,7 @@ void ToolMain::UpdateInput(MSG* msg)
 		break;
 
 	case WM_MOUSEHOVER: // if mouse hovers over certain point
-
+		
 		break;
 
 	}

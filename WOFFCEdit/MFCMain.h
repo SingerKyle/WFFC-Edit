@@ -9,6 +9,7 @@
 #include "resource.h"
 #include "MFCFrame.h"
 #include "SelectDialogue.h"
+#include "ObjectEditDialogue.h"
 
 
 class MFCMain : public CWinApp 
@@ -26,6 +27,7 @@ private:
 	ToolMain m_ToolSystem;	//Instance of Tool System that we interface to. 
 	CRect WindowRECT;	//Window area rectangle. 
 	SelectDialogue m_ToolSelectDialogue;			//for modeless dialogue, declare it here
+	ObjectEditDialogue m_ToolEditObjectDialogue;
 
 	int m_width;		
 	int m_height;
@@ -35,6 +37,10 @@ private:
 	afx_msg void MenuFileSaveTerrain();
 	afx_msg void MenuEditSelect();
 	afx_msg	void ToolBarButton1();
+	afx_msg void AngryButtonFunction();
+	afx_msg void Undo();
+	afx_msg void Redo();
+	afx_msg void EditObjectTransform();
 
 
 	DECLARE_MESSAGE_MAP()	// required macro for message map functionality  One per class

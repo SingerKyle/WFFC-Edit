@@ -7,6 +7,9 @@ BEGIN_MESSAGE_MAP(MFCMain, CWinApp)
 	ON_COMMAND(ID_FILE_SAVETERRAIN, &MFCMain::MenuFileSaveTerrain)
 	ON_COMMAND(ID_EDIT_SELECT, &MFCMain::MenuEditSelect)
 	ON_COMMAND(ID_BUTTON40001,	&MFCMain::ToolBarButton1)
+	ON_COMMAND(ID_BUTTON40007, &MFCMain::EditObjectTransform)
+	ON_COMMAND(ID_EDIT_UNDO, &MFCMain::Undo)
+	ON_COMMAND(ID_EDIT_REDO, &MFCMain::Redo)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_TOOL, &CMyFrame::OnUpdatePage)
 END_MESSAGE_MAP()
 
@@ -127,6 +130,28 @@ void MFCMain::ToolBarButton1()
 {
 	
 	m_ToolSystem.onActionSave();
+}
+
+void MFCMain::AngryButtonFunction()
+{
+
+}
+
+void MFCMain::Undo()
+{
+
+}
+
+void MFCMain::Redo()
+{
+
+}
+
+void MFCMain::EditObjectTransform()
+{
+	m_ToolEditObjectDialogue.Create(IDD_OBJECTTRANSFORM);
+	m_ToolEditObjectDialogue.ShowWindow(SW_SHOW);
+	m_ToolEditObjectDialogue.GrabCurrentSelectedObject(&m_ToolSystem.m_sceneGraph);
 }
 
 

@@ -26,7 +26,7 @@ Game::Game()
 	m_grid = false;
 
 	//functional
-	m_movespeed = 150.f;
+	m_movespeed = 125.f;
 	m_camRotRate = 10.0f;
 
 	//camera
