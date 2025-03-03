@@ -146,13 +146,13 @@ void Game::Update(DX::StepTimer const& timer)
     else
     {
         // Assuming m_selectedObjects.size() is of type size_t (or unsigned int)
-        size_t size = m_selectedObjects.size();
-        bool status = m_InputCommands.leftMouseHeld;
-        wchar_t buffer[256]; // Make sure the buffer is large enough
-        const wchar_t* statusStr = status ? L"true" : L"false";
-        swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"We're in the camera update, size of selectedObjects = %zu, status = %s\n", size, statusStr);
+        //size_t size = m_selectedObjects.size();
+        //bool status = m_InputCommands.leftMouseHeld;
+        //wchar_t buffer[256]; // Make sure the buffer is large enough
+        //const wchar_t* statusStr = status ? L"true" : L"false";
+        //swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"We're in the camera update, size of selectedObjects = %zu, status = %s\n", size, statusStr);
 
-        OutputDebugStringW(buffer);
+        //OutputDebugStringW(buffer);
         m_camera->Update(timer);
     }
     

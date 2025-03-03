@@ -46,6 +46,18 @@ void ObjectEditDialogue::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_OBJECT_SELECT, m_comboBox);
+	// Positions
+	DDX_Control(pDX, IDC_EDIT_X, m_PositionX);
+	DDX_Control(pDX, IDC_EDIT_Y, m_PositionY);
+	DDX_Control(pDX, IDC_EDIT_Z, m_PositionZ);
+	// Rotations
+	DDX_Control(pDX, IDC_ROTATION_YAW, m_RotationYaw);
+	DDX_Control(pDX, IDC_ROTATION_PITCH, m_RotationPitch);
+	DDX_Control(pDX, IDC_ROTATION_ROLL, m_RotationRoll);
+	//Scales
+	DDX_Control(pDX, IDC_SCALE_X, M_ScaleX);
+	DDX_Control(pDX, IDC_SCALE_Y, M_ScaleY);
+	DDX_Control(pDX, IDC_SCALE_Z, M_ScaleZ);
 }
 
 void ObjectEditDialogue::End()
@@ -64,6 +76,7 @@ void ObjectEditDialogue::Select()
 	m_currentSelection = selectedValue;
 
 	// Using selected item, update other boxes
+
 }
 
 BOOL ObjectEditDialogue::OnInitDialog()
@@ -91,11 +104,28 @@ void ObjectEditDialogue::OnCbnSelchangeObjectSelect()
 	{
 		if (m_sceneGraph->at(i).ID == m_currentSelection)
 		{
-			m_PositionX.SetWindowTextW(L"3");
-			m_PositionY.SetWindowTextW(L"2");
-			m_PositionZ.SetWindowTextW(L"1");
+			OutputDebugStringW(L"ID MATCHES\n");
+			CString x;
+			x = _T("Hello World");
+
+			GetDlgItem(IDC_EDIT_PITCH)->SetWindowText(x);
+
+			m_PositionX.SetWindowTextW(x);
+			m_PositionY.SetWindowTextW(x);
+			m_PositionZ.SetWindowTextW(x);
 
 			break;
 		}
+
+		OutputDebugStringW(L"No ID Match\n");
 	}
+	CString x;
+	x = _T("Database #");
+
+	GetDlgItem(IDC_EDIT_PITCH)->SetWindowText(x);
+
+	m_PositionX.SetWindowTextW(x);
+	m_PositionY.SetWindowTextW(x);
+	m_PositionZ.SetWindowTextW(x);
+
 }

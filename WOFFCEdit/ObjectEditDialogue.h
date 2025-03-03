@@ -39,9 +39,21 @@ public:
 
 	afx_msg void OnCbnSelchangeObjectSelect();
 
+	// Position Edit Box
 	CEdit m_PositionX;
 	CEdit m_PositionY;
 	CEdit m_PositionZ;
+
+	// Rotation Edit Box
+	CEdit m_RotationYaw;
+	CEdit m_RotationPitch;
+	CEdit m_RotationRoll;
+
+	// Scale Edit Box
+	CEdit M_ScaleX;
+	CEdit M_ScaleY;
+	CEdit M_ScaleZ;
+
 };
 
 

@@ -1,28 +1,4 @@
-﻿  MFCMain.cpp
-  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(40,9): warning C4005: 'ID_EDIT_UNDO': macro redefinition
-  (compiling source file 'MFCMain.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(260,9):
-      see previous definition of 'ID_EDIT_UNDO'
-  
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(41,9): warning C4005: 'ID_EDIT_REDO': macro redefinition
-  (compiling source file 'MFCMain.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(261,9):
-      see previous definition of 'ID_EDIT_REDO'
-  
-  Main.cpp
-  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(40,9): warning C4005: 'ID_EDIT_UNDO': macro redefinition
-  (compiling source file 'Main.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(260,9):
-      see previous definition of 'ID_EDIT_UNDO'
-  
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(41,9): warning C4005: 'ID_EDIT_REDO': macro redefinition
-  (compiling source file 'Main.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(261,9):
-      see previous definition of 'ID_EDIT_REDO'
-  
-  ObjectEditDialogue.cpp
+﻿  ObjectEditDialogue.cpp
   _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
 D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(40,9): warning C4005: 'ID_EDIT_UNDO': macro redefinition
   (compiling source file 'ObjectEditDialogue.cpp')
@@ -34,6 +10,5 @@ D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(41,9): warning C4005: 'ID
       C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(261,9):
       see previous definition of 'ID_EDIT_REDO'
   
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\ObjectEditDialogue.cpp(90,20): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\ObjectEditDialogue.cpp(103,20): warning C4018: '<': signed/unsigned mismatch
   Win32SimpleSample.vcxproj -> D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Debug\WoFEdit.exe
