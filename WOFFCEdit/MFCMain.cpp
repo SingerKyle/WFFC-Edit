@@ -19,7 +19,7 @@ BOOL MFCMain::InitInstance()
 	m_frame->Create(	NULL,
 					_T("World Of Flim-Flam Craft Editor"),
 					WS_OVERLAPPEDWINDOW,
-					CRect(100, 100, 1024, 768),
+					CRect(100, 100, 1920, 1080),
 					NULL,
 					NULL,
 					0,
@@ -69,8 +69,28 @@ int MFCMain::Run()
 		}
 		else
 		{	
-			int ID = m_ToolSystem.getCurrentSelectionID();
-			std::wstring statusString = L"Selected Object: " + std::to_wstring(ID);
+			std::vector<int> IDs = m_ToolSystem.getCurrentSelectionID();
+			std::wstring statusString = L"Selected Object: ";
+
+			if (IDs.empty()) 
+			{
+				statusString += L"None";
+			}
+			else
+			{
+				for (size_t i = 0; i < IDs.size(); i++) 
+				{
+					// Add the current ID to the string
+					statusString += std::to_wstring(IDs[i]);
+
+					// Add a comma if this isn't the last ID
+					if (i < IDs.size() - 1) 
+					{
+						statusString += L", ";
+					}
+				}
+			}
+
 			m_ToolSystem.Tick(&msg);
 
 			//send current object ID to status bar in The main frame
@@ -100,7 +120,7 @@ void MFCMain::MenuEditSelect()
 	//modeless dialogue must be declared in the class.   If we do local it will go out of scope instantly and destroy itself
 	m_ToolSelectDialogue.Create(IDD_DIALOG1);	//Start up modeless
 	m_ToolSelectDialogue.ShowWindow(SW_SHOW);	//show modeless
-	m_ToolSelectDialogue.SetObjectData(&m_ToolSystem.m_sceneGraph, &m_ToolSystem.m_selectedObject);
+	m_ToolSelectDialogue.SetObjectData(&m_ToolSystem.m_sceneGraph, &m_ToolSystem.m_selectedObjects);
 }
 
 void MFCMain::ToolBarButton1()

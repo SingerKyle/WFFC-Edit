@@ -3,6 +3,7 @@
 #include "SimpleMath.h"
 #include "InputCommands.h"
 #include "StepTimer.h"
+#include <SimpleMath.h>
 
 namespace DX
 {
@@ -19,9 +20,9 @@ public:
 
 	// Camera Controls
 	void Update(DX::StepTimer const& timer);
-	void Rotate(float yawDegrees, float pitchDegrees);
-	void Move(const DirectX::SimpleMath::Vector3& movement);
-	void MoveCam();
+	void ArcCamUpdate(DirectX::SimpleMath::Vector3 objectPos, float scale, DX::StepTimer const& timer);
+	void FocusCamOnObject(DirectX::SimpleMath::Vector3 objectPos, float scale, DX::StepTimer const& timer);
+	void MoveCam(float dt);
 	// Matrices
 
 	// Updates
@@ -43,6 +44,8 @@ private:
 
 	//Camera Position Variable
 	DirectX::SimpleMath::Vector3			m_position;
+	// Arcball variable
+	float									m_distance;
 
 	// vectors
 	DirectX::SimpleMath::Vector3			m_orientation;
@@ -51,6 +54,8 @@ private:
 	DirectX::SimpleMath::Vector3			m_rightVector;
 	DirectX::SimpleMath::Vector3			m_orientationAngles;
 	DirectX::SimpleMath::Vector3			m_upVector;
+
+	DirectX::SimpleMath::Matrix				m_viewMatrix;
 
 	// Movement speed
 	float									m_moveSpeed;

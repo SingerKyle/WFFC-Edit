@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "DisplayObject.h"
 #include <string>
+#include <iostream>
 
 
 using namespace DirectX;
@@ -25,8 +26,8 @@ Game::Game()
 	m_grid = false;
 
 	//functional
-	m_movespeed = 0.30;
-	m_camRotRate = 1.0;
+	m_movespeed = 150.f;
+	m_camRotRate = 10.0f;
 
 	//camera
     
@@ -42,6 +43,7 @@ Game::Game()
     mouseX = 0.0f;
     mouseY = 0.0f;
 
+    m_ScreenDimensions = { 0,0,0,0 };
 }
 
 Game::~Game()
@@ -66,6 +68,8 @@ void Game::Initialize(HWND window, int width, int height)
     m_mouse->SetWindow(window);
 
     m_deviceResources->SetWindow(window, width, height);
+
+    GetClientRect(window, &m_ScreenDimensions);
 
     m_deviceResources->CreateDeviceResources();
     CreateDeviceDependentResources();
@@ -135,7 +139,23 @@ void Game::Update(DX::StepTimer const& timer)
     // Get current mouse state
     DirectX::Mouse::State mouseState = m_mouse->GetState();
     
-    m_camera->Update(timer);
+    if (m_InputCommands.leftMouseHeld && m_selectedObjects.size() == 1)
+    {
+        m_camera->ArcCamUpdate((m_displayList[m_selectedObjects[0]].m_position), m_displayList[m_selectedObjects[0]].m_scale.x, timer);
+    }
+    else
+    {
+        // Assuming m_selectedObjects.size() is of type size_t (or unsigned int)
+        size_t size = m_selectedObjects.size();
+        bool status = m_InputCommands.leftMouseHeld;
+        wchar_t buffer[256]; // Make sure the buffer is large enough
+        const wchar_t* statusStr = status ? L"true" : L"false";
+        swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"We're in the camera update, size of selectedObjects = %zu, status = %s\n", size, statusStr);
+
+        OutputDebugStringW(buffer);
+        m_camera->Update(timer);
+    }
+    
 
 	//apply camera vectors
     m_view = m_camera->GetViewMatrix();
@@ -333,8 +353,14 @@ void Game::OnResuming()
 
 void Game::OnWindowSizeChanged(int width, int height)
 {
+
+    // For some reason the window changing sizes messes with the selection, need to fix!
+
     if (!m_deviceResources->WindowSizeChanged(width, height))
         return;
+
+    m_ScreenDimensions.right = width;
+    m_ScreenDimensions.left = height;
 
     CreateWindowSizeDependentResources();
 }
@@ -450,6 +476,104 @@ void Game::NewAudioDevice()
 
 
 #pragma endregion
+
+std::vector<int> Game::MousePicking()
+{
+    std::vector<int> selectedIDs;
+    float closestDistance = FLT_MAX;
+    int closestObjectID = -1;
+
+    //setup near and far planes of frustum with mouse X and mouse y passed down from Toolmain. 
+    //they may look the same but note, the difference in Z
+    const XMVECTOR nearSource = XMVectorSet(m_InputCommands.mouseDeltaX, m_InputCommands.mouseDeltaY, 0.0f, 1.0f);
+    const XMVECTOR farSource = XMVectorSet(m_InputCommands.mouseDeltaX, m_InputCommands.mouseDeltaY, 1.0f, 1.0f);
+
+    //Loop through entire display list of objects and pick with each in turn. 
+    for (int i = 0; i < m_displayList.size(); i++)
+    {
+        //Get the scale factor and translation of the object
+        const XMVECTORF32 scale = { m_displayList[i].m_scale.x,		m_displayList[i].m_scale.y,		m_displayList[i].m_scale.z };
+        const XMVECTORF32 translate = { m_displayList[i].m_position.x,	m_displayList[i].m_position.y,	m_displayList[i].m_position.z };
+
+        //convert euler angles into a quaternion for the rotation of the object
+        XMVECTOR rotate = Quaternion::CreateFromYawPitchRoll(m_displayList[i].m_orientation.y * 3.1415 / 180,
+            m_displayList[i].m_orientation.x * 3.1415 / 180,
+            m_displayList[i].m_orientation.z * 3.1415 / 180);
+
+        //create set the matrix of the selected object in the world based on the translation, scale and rotation.
+        XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
+
+        //Unproject the points on the near and far plane, with respect to the matrix we just created.
+        XMVECTOR nearPoint = XMVector3Unproject(nearSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_view, local);
+        XMVECTOR farPoint = XMVector3Unproject(farSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_view, local);
+
+        //turn the transformed points into our picking vector. 
+        XMVECTOR pickingVector = farPoint - nearPoint;
+        pickingVector = XMVector3Normalize(pickingVector);
+
+        //loop through mesh list for object
+        for (int y = 0; y < m_displayList[i].m_model.get()->meshes.size(); y++)
+        {
+            float PickedDistance = 0;
+            if (m_displayList[i].m_model.get()->meshes[y]->boundingBox.Intersects(nearPoint, pickingVector, PickedDistance))
+            {
+                // If this hit is closer than any previous hit
+                if (PickedDistance < closestDistance)
+                {
+                    closestDistance = PickedDistance;
+                    closestObjectID = i;
+                }
+            }
+        }
+    }
+
+    // handle selection / deselection
+    if (closestObjectID != -1)
+    {
+        // check if user wants to select multiple objects
+        bool shouldMultiSelect = m_InputCommands.isShiftDown;
+
+        // check if object is already selected
+        auto it = std::find(m_selectedObjects.begin(), m_selectedObjects.end(), closestObjectID);
+        bool isAlreadySelected = (it != m_selectedObjects.end());
+
+        if (shouldMultiSelect)
+        {
+            if (isAlreadySelected)
+            {
+                // Deselect if already selected
+                m_selectedObjects.erase(it);
+            }
+            else
+            {
+                // Add to selection
+                m_selectedObjects.push_back(closestObjectID);
+            }
+        }
+        else
+        {
+            // clear existing selection and select new object, if it's the same object we toggle selection
+            if (m_selectedObjects.size() == 1 && isAlreadySelected)
+            {
+                // Deselect the only selected object
+                m_selectedObjects.clear();
+            }
+            else
+            {
+                // Clear selection and select new object
+                m_selectedObjects.clear();
+                m_selectedObjects.push_back(closestObjectID);
+            }
+        }
+    }
+    else
+    {
+        m_selectedObjects.clear();
+    }
+
+    //if we got a hit.  return it.  
+    return m_selectedObjects;
+}
 
 #pragma region Direct3D Resources
 // These are the resources that depend on the device.

@@ -32,7 +32,7 @@ SelectDialogue::~SelectDialogue()
 }
 
 ///pass through pointers to the data in the tool we want to manipulate
-void SelectDialogue::SetObjectData(std::vector<SceneObject>* SceneGraph, int * selection)
+void SelectDialogue::SetObjectData(std::vector<SceneObject>* SceneGraph, std::vector<int> * selection)
 {
 	m_sceneGraph = SceneGraph;
 	m_currentSelection = selection;
@@ -65,9 +65,10 @@ void SelectDialogue::Select()
 	CString currentSelectionValue;
 	
 	m_listBox.GetText(index, currentSelectionValue);
+	int selectedValue = _ttoi(currentSelectionValue);
 
-	*m_currentSelection = _ttoi(currentSelectionValue);
-
+	m_currentSelection->clear();
+	m_currentSelection->push_back(selectedValue);
 }
 
 BOOL SelectDialogue::OnInitDialog()

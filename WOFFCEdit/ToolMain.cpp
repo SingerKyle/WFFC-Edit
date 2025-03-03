@@ -2,6 +2,8 @@
 #include "resource.h"
 #include <vector>
 #include <sstream>
+#include <optional>
+
 
 //
 //ToolMain Class
@@ -9,7 +11,7 @@ ToolMain::ToolMain()
 {
 
 	m_currentChunk = 0;		//default value
-	m_selectedObject = 0;	//initial selection ID
+	m_selectedObjects;		//initial selection ID
 	m_sceneGraph.clear();	//clear the vector for the scenegraph
 	m_databaseConnection = NULL;
 
@@ -22,6 +24,7 @@ ToolMain::ToolMain()
 	m_toolInputCommands.rightMousePressed = false;
 	m_toolInputCommands.leftMousePressed = false;
 
+	m_toolInputCommands.isShiftDown = false;
 }
 
 
@@ -31,10 +34,10 @@ ToolMain::~ToolMain()
 }
 
 
-int ToolMain::getCurrentSelectionID()
+std::vector<int> ToolMain::getCurrentSelectionID()
 {
 
-	return m_selectedObject;
+	return m_selectedObjects;
 }
 
 void ToolMain::onActionInitialise(HWND handle, int width, int height)
@@ -292,6 +295,32 @@ void ToolMain::Tick(MSG* msg)
 
 	//Renderer Update Call
 	m_d3dRenderer.Tick(&m_toolInputCommands);
+
+	if (m_toolInputCommands.leftMousePressed && !m_toolInputCommands.leftMouseHeld)
+	{
+		m_selectedObjects = m_d3dRenderer.MousePicking();
+		m_toolInputCommands.leftMousePressed = false;
+
+		/*if (m_selectedObjects.empty())
+		{
+			m_toolInputCommands.isObjectSelected = false;
+		}
+		else
+		{
+			m_toolInputCommands.isObjectSelected = true;
+		}*/
+
+	}
+
+	// Check if mouse button is being held
+	if (m_leftMouseDownTime != std::chrono::steady_clock::time_point{})
+	{
+		auto elapsedTime = std::chrono::steady_clock::now() - m_leftMouseDownTime;
+		if (elapsedTime > holdThreshold)
+		{
+			m_toolInputCommands.leftMouseHeld = true;
+		}
+	}
 }
 
 void ToolMain::UpdateInput(MSG* msg)
@@ -323,10 +352,14 @@ void ToolMain::UpdateInput(MSG* msg)
 
 	case WM_LBUTTONDOWN:	//Left Mouse Button Down
 		m_toolInputCommands.leftMousePressed = true;
+		m_leftMouseDownTime = std::chrono::steady_clock::now();
+		m_toolInputCommands.leftMouseHeld = false;
 		break;
 
 	case WM_LBUTTONUP: // Left Mouse Button Up
 		m_toolInputCommands.leftMousePressed = false;
+		m_toolInputCommands.leftMouseHeld = false;
+		m_leftMouseDownTime = std::chrono::steady_clock::time_point{};
 		break;
 
 	case WM_RBUTTONDOWN: // Right Mouse Button Down
@@ -391,5 +424,10 @@ void ToolMain::UpdateInput(MSG* msg)
 		m_toolInputCommands.down = true;
 	}
 	else m_toolInputCommands.down = false;
-	//WASD
+	if (m_keyArray[VK_SHIFT])
+	{
+		m_toolInputCommands.isShiftDown = true;
+	}
+	else m_toolInputCommands.isShiftDown = false;
+
 }

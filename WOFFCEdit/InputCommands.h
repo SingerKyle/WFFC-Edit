@@ -10,9 +10,11 @@ struct InputCommands
 	bool rotLeft;
 	bool up;
 	bool down;
+	bool isShiftDown;
 
 	// Mouse Controls & Variables
 	bool leftMousePressed;
+	bool leftMouseHeld;
 	bool rightMousePressed;
 
 	// Camera movement - mouse
