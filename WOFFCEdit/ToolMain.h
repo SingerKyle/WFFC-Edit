@@ -10,6 +10,9 @@
 #include <chrono>
 #include <vector>
 
+using namespace std::chrono;
+using namespace std::literals;
+
 
 class ToolMain
 {
@@ -36,6 +39,8 @@ public: //methods
 	void	Tick(MSG *msg);
 	void	UpdateInput(MSG *msg);
 
+	void OnWindowStatusChanged(bool IsWindowOpen);
+
 public:	//variables
 	std::vector<SceneObject>    m_sceneGraph;	    //our scenegraph storing all the objects in the current chunk
 	ChunkObject					m_chunk;		    //our landscape chunk
@@ -57,7 +62,8 @@ private:	//variables
 	int m_width;		//dimensions passed to directX
 	int m_height;
 	int m_currentChunk;			//the current chunk of thedatabase that we are operating on.  Dictates loading and saving. 
+	bool WindowOpen;
 	
 	std::chrono::steady_clock::time_point			m_leftMouseDownTime;
-	const std::chrono::milliseconds					holdThreshold = std::chrono::milliseconds(500);
+	const std::chrono::milliseconds					holdThreshold = 500ms;
 };

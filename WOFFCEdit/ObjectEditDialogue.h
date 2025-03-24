@@ -5,6 +5,8 @@
 #include "SceneObject.h"
 #include "vector"
 
+class MFCMain;
+
 class ObjectEditDialogue : public CDialogEx
 {
 	DECLARE_DYNAMIC(ObjectEditDialogue)
@@ -13,7 +15,7 @@ public:
 	ObjectEditDialogue(CWnd* pParent, std::vector<SceneObject>* SceneGraph);   // modal // takes in out scenegraph in the constructor
 	ObjectEditDialogue(CWnd* pParent = NULL);
 	virtual ~ObjectEditDialogue();
-	void GrabCurrentSelectedObject(std::vector<SceneObject>* SceneGraph);
+	void GrabCurrentSelectedObject(MFCMain* main, std::vector<SceneObject>* SceneGraph);
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -28,6 +30,7 @@ protected:
 	std::vector<SceneObject> * m_sceneGraph;
 	int m_currentSelection;
 
+	MFCMain* Main;
 
 	DECLARE_MESSAGE_MAP()
 public:

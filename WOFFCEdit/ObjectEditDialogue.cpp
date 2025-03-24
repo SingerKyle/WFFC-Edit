@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "ObjectEditDialogue.h"
+#include "MFCMain.h"
 
 IMPLEMENT_DYNAMIC(ObjectEditDialogue, CDialogEx)
 
@@ -15,6 +16,8 @@ ObjectEditDialogue::ObjectEditDialogue(CWnd* pParent, std::vector<SceneObject>* 
 	: CDialogEx(IDD_OBJECTTRANSFORM, pParent)
 {
 	m_sceneGraph = SceneGraph;
+
+	
 }
 
 ObjectEditDialogue::ObjectEditDialogue(CWnd* pParent)
@@ -28,8 +31,10 @@ ObjectEditDialogue::~ObjectEditDialogue()
 
 }
 
-void ObjectEditDialogue::GrabCurrentSelectedObject(std::vector<SceneObject>* SceneGraph)
+void ObjectEditDialogue::GrabCurrentSelectedObject(MFCMain* main, std::vector<SceneObject>* SceneGraph)
 {
+	Main = main;
+
 	m_sceneGraph = SceneGraph;
 
 	//roll through all the objects in the scene graph and put an entry for each in the listbox
@@ -62,6 +67,8 @@ void ObjectEditDialogue::DoDataExchange(CDataExchange* pDX)
 
 void ObjectEditDialogue::End()
 {
+	Main->OnDialogueBoxDestroyed();
+
 	DestroyWindow();	//destory the window properly.  INcluding the links and pointers created.  THis is so the dialogue can start again. 
 }
 
@@ -82,6 +89,8 @@ void ObjectEditDialogue::Select()
 BOOL ObjectEditDialogue::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
+
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -106,7 +115,7 @@ void ObjectEditDialogue::OnCbnSelchangeObjectSelect()
 		{
 			OutputDebugStringW(L"ID MATCHES\n");
 			CString x;
-			x = _T("Hello World");
+			x = _T("Meow");
 
 			GetDlgItem(IDC_EDIT_PITCH)->SetWindowText(x);
 
@@ -119,13 +128,13 @@ void ObjectEditDialogue::OnCbnSelchangeObjectSelect()
 
 		OutputDebugStringW(L"No ID Match\n");
 	}
-	CString x;
-	x = _T("Database #");
+	//CString x;
+	//x = _T("Database #");
 
-	GetDlgItem(IDC_EDIT_PITCH)->SetWindowText(x);
+	//GetDlgItem(IDC_EDIT_PITCH)->SetWindowText(x);
 
-	m_PositionX.SetWindowTextW(x);
-	m_PositionY.SetWindowTextW(x);
-	m_PositionZ.SetWindowTextW(x);
+	//m_PositionX.SetWindowTextW(x);
+	//m_PositionY.SetWindowTextW(x);
+	//m_PositionZ.SetWindowTextW(x);
 
 }

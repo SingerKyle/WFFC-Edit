@@ -1,22 +1,4 @@
-﻿  Game.cpp
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(244,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(243,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(242,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(228,10): warning C4101: 'Buffer': unreferenced local variable
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(521,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(521,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(522,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(522,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(525,23): warning C4018: '<': signed/unsigned mismatch
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(534,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(533,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(532,104): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(540,117): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(540,91): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(541,115): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(541,89): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
-D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Game.cpp(548,27): warning C4018: '<': signed/unsigned mismatch
-  MFCMain.cpp
+﻿  MFCMain.cpp
   _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
 D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(47,9): warning C4005: 'ID_EDIT_UNDO': macro redefinition
   (compiling source file 'MFCMain.cpp')
@@ -28,5 +10,4 @@ D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\resource.h(48,9): warning C4005: 'ID
       C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\atlmfc\include\afxres.h(261,9):
       see previous definition of 'ID_EDIT_REDO'
   
-  Generating Code...
   Win32SimpleSample.vcxproj -> D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Debug\WoFEdit.exe

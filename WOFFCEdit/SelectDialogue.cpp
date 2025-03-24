@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "SelectDialogue.h"
+#include "MFCMain.h"
 
 // SelectDialogue dialog
 
@@ -56,6 +57,8 @@ void SelectDialogue::DoDataExchange(CDataExchange* pDX)
 
 void SelectDialogue::End()
 {
+	
+
 	DestroyWindow();	//destory the window properly.  INcluding the links and pointers created.  THis is so the dialogue can start again. 
 }
 

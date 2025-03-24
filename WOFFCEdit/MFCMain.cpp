@@ -43,6 +43,8 @@ BOOL MFCMain::InitInstance()
 
 	m_ToolSystem.onActionInitialise(m_toolHandle, m_width, m_height);
 
+	WindowOpen = false;
+
 	return TRUE;
 }
 
@@ -105,6 +107,12 @@ int MFCMain::Run()
 	return (int)msg.wParam;
 }
 
+void MFCMain::OnDialogueBoxDestroyed()
+{
+	WindowOpen = false;
+	m_ToolSystem.OnWindowStatusChanged(WindowOpen);
+}
+
 void MFCMain::MenuFileQuit()
 {
 	//will post message to the message thread that will exit the application normally
@@ -152,7 +160,9 @@ void MFCMain::EditObjectTransform()
 {
 	m_ToolEditObjectDialogue.Create(IDD_OBJECTTRANSFORM);
 	m_ToolEditObjectDialogue.ShowWindow(SW_SHOW);
-	m_ToolEditObjectDialogue.GrabCurrentSelectedObject(&m_ToolSystem.m_sceneGraph);
+	m_ToolEditObjectDialogue.GrabCurrentSelectedObject(this, &m_ToolSystem.m_sceneGraph);
+
+	OnDialogueBoxCreated();
 }
 
 void MFCMain::EditorSettings()
@@ -160,6 +170,12 @@ void MFCMain::EditorSettings()
 	m_ToolEditorSettings.Create(IDD_EDITOR_SETTINGS);	//Start up modeless
 	m_ToolEditorSettings.ShowWindow(SW_SHOW);	//show modeless
 	m_ToolEditorSettings.SetObjectData(&m_ToolSystem);
+}
+
+void MFCMain::OnDialogueBoxCreated()
+{
+	WindowOpen = true;
+	m_ToolSystem.OnWindowStatusChanged(WindowOpen);
 }
 
 

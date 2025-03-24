@@ -21,6 +21,8 @@ public:
 	BOOL InitInstance();
 	int  Run();
 
+	void OnDialogueBoxDestroyed();
+
 private:
 
 	CMyFrame * m_frame;	//handle to the frame where all our UI is
@@ -33,6 +35,7 @@ private:
 
 	int m_width;		
 	int m_height;
+	bool WindowOpen;
 	
 	//Interface funtions for menu and toolbar etc requires
 	afx_msg void MenuFileQuit();
@@ -45,6 +48,7 @@ private:
 	afx_msg void EditObjectTransform();
 	afx_msg void EditorSettings();
 
+	void OnDialogueBoxCreated();
 
 	DECLARE_MESSAGE_MAP()	// required macro for message map functionality  One per class
 };

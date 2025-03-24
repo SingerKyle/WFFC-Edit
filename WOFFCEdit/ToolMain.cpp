@@ -25,6 +25,8 @@ ToolMain::ToolMain()
 	m_toolInputCommands.leftMousePressed = false;
 
 	m_toolInputCommands.isShiftDown = false;
+
+	WindowOpen = false;
 }
 
 
@@ -314,7 +316,7 @@ void ToolMain::Tick(MSG* msg)
 	//Renderer Update Call
 	m_d3dRenderer.Tick(&m_toolInputCommands);
 
-	if (m_toolInputCommands.leftMousePressed && !m_toolInputCommands.leftMouseHeld)
+	if (m_toolInputCommands.leftMousePressed && !m_toolInputCommands.leftMouseHeld && !WindowOpen)
 	{
 		m_selectedObjects = m_d3dRenderer.MousePicking();
 		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
@@ -449,4 +451,9 @@ void ToolMain::UpdateInput(MSG* msg)
 	}
 	else m_toolInputCommands.isShiftDown = false;
 
+}
+
+void ToolMain::OnWindowStatusChanged(bool IsWindowOpen)
+{
+	WindowOpen = IsWindowOpen;
 }
