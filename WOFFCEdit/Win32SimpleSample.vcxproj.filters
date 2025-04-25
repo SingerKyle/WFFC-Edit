@@ -17,6 +17,9 @@
     <Filter Include="SQLITE">
       <UniqueIdentifier>{a006b0b6-46b2-4c4f-808a-ec8fe3e790eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files">
+      <UniqueIdentifier>{1bac0d4b-3901-4b3e-9301-0d443de5bbb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -59,15 +62,21 @@
     <ClCompile Include="SelectDialogue.cpp">
       <Filter>MFC</Filter>
     </ClCompile>
-    <ClCompile Include="ArcCamera.cpp">
-      <Filter>Renderer</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectEditDialogue.cpp">
+    <ClCompile Include="Gizmo.cpp">
+      <Filter>Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformsDialogue.cpp">
       <Filter>MFC</Filter>
     </ClCompile>
-    <ClCompile Include="EditorSettingsDialogue.cpp">
-      <Filter>MFC</Filter>
+    <ClCompile Include="ICommand.cpp">
+      <Filter>Tool</Filter>
     </ClCompile>
+    <ClCompile Include="TransformCommand.cpp" />
+    <ClCompile Include="CommandManager.cpp" />
+    <ClCompile Include="EditorSettingsDialogue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h">
@@ -117,15 +126,21 @@
     <ClInclude Include="SelectDialogue.h">
       <Filter>MFC</Filter>
     </ClInclude>
-    <ClInclude Include="ArcCamera.h">
-      <Filter>Renderer</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectEditDialogue.h">
+    <ClInclude Include="Gizmo.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformsDialogue.h">
       <Filter>MFC</Filter>
     </ClInclude>
-    <ClInclude Include="EditorSettingsDialogue.h">
-      <Filter>MFC</Filter>
+    <ClInclude Include="ICommand.h">
+      <Filter>Tool</Filter>
     </ClInclude>
+    <ClInclude Include="TransformCommand.h" />
+    <ClInclude Include="CommandManager.h" />
+    <ClInclude Include="EditorSettingsDialogue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

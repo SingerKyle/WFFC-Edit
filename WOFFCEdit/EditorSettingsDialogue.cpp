@@ -1,4 +1,6 @@
 #include "EditorSettingsDialogue.h"
+#include <fstream> 
+#include <string> 
 
 IMPLEMENT_DYNAMIC(EditorSettingsDialogue, CDialogEx)
 
@@ -25,8 +27,22 @@ void EditorSettingsDialogue::SetObjectData(ToolMain* toolMain)
 	SetInitialText(m_moveSpeed, m_Tool->GetCamera()->GetMoveSpeed());
 	SetInitialText(m_camRotRate, m_Tool->GetCamera()->GetRotRate());
 	m_camInvertControls.SetCheck(m_Tool->GetCamera()->GetIsInverted() ? BST_CHECKED : BST_UNCHECKED);
-	SetInitialText(m_resolutionX, m_Tool->GetWidth());
-	SetInitialText(m_resolutionY, m_Tool->GetHeight());
+	//SetInitialText(m_resolutionX, m_Tool->GetWidth());
+	//SetInitialText(m_resolutionY, m_Tool->GetHeight());
+	SetLoadedValues();
+}
+
+void EditorSettingsDialogue::SetLoadedValues()
+{
+	camSettings.LoadFromFile(L"CameraSettings.txt");
+
+
+	SetInitialText(m_moveSpeed, camSettings.moveSpeed);
+	SetInitialText(m_camRotRate, camSettings.rotationSpeed);
+	m_camInvertControls.SetCheck(camSettings.invertCamera ? BST_CHECKED : BST_UNCHECKED);
+
+	// Update underlying tool as well
+	m_Tool->UpdateCamValues(camSettings.moveSpeed, camSettings.rotationSpeed, camSettings.invertCamera);
 }
 
 void EditorSettingsDialogue::DoDataExchange(CDataExchange* pDX)
@@ -35,8 +51,8 @@ void EditorSettingsDialogue::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SETTING_MOVESPEED, m_moveSpeed);
 	DDX_Control(pDX, IDC_SETTING_ROTATESPEED, m_camRotRate);
 	DDX_Control(pDX, IDC_INVERTCAM, m_camInvertControls);
-	DDX_Control(pDX, IDC_RESOLUTION_X, m_resolutionX);
-	DDX_Control(pDX, IDC_RESOLUTION_Y, m_resolutionY);
+	//DDX_Control(pDX, IDC_RESOLUTION_X, m_resolutionX);
+	//DDX_Control(pDX, IDC_RESOLUTION_Y, m_resolutionY);
 }
 
 void EditorSettingsDialogue::SetInitialText(CEdit& box, float value)
@@ -85,8 +101,8 @@ void EditorSettingsDialogue::OnBnClickedOk()
 
 	m_moveSpeed.GetWindowText(moveSpeed);
 	m_camRotRate.GetWindowText(camRotRate);
-	m_resolutionX.GetWindowText(ResX);
-	m_resolutionX.GetWindowText(ResY);
+	//m_resolutionX.GetWindowText(ResX);
+	//m_resolutionX.GetWindowText(ResY);
 	invertCamera = m_camInvertControls.GetCheck();
 
 	if (_ttof(camRotRate) <= 0)
@@ -97,14 +113,16 @@ void EditorSettingsDialogue::OnBnClickedOk()
 	{
 		MessageBox(L"Camera Movement is currently set to 0. Please change this so you can move the camera.", L"Warning: Camera Movement", MB_OK);
 	}
-	else if (_ttoi(ResX) <= 0 && _ttoi(ResY) <= 0)
+	/*else if (_ttoi(ResX) <= 0 && _ttoi(ResY) <= 0)
 	{
 		MessageBox(L"Resolution is set to 0. Please change this.", L"Warning: Resolution", MB_OK);
-	}
+	}*/
 	else
 	{
 		m_Tool->UpdateCamValues(_ttof(moveSpeed), _ttof(camRotRate), invertCamera);
-		m_Tool->ResizeWindow(_ttoi(ResX), _ttoi(ResY));
+		camSettings.UpdateCamValues(_ttof(moveSpeed), _ttof(camRotRate), invertCamera);
+		camSettings.SaveToFile(L"CameraSettings.txt");
+		//m_Tool->ResizeWindow(_ttoi(ResX), _ttoi(ResY));
 		CDialogEx::OnOK();
 		DestroyWindow();
 	}
@@ -116,4 +134,33 @@ void EditorSettingsDialogue::OnBnClickedCancel()
 	// TODO: Add your control notification handler code here
 	CDialogEx::OnCancel();
 	DestroyWindow();
+}
+
+bool FEditorSettings::LoadFromFile(const std::wstring& filename)
+{
+	std::wifstream file(filename);
+	if (!file.is_open()) return false;
+
+	file >> moveSpeed;
+	file >> rotationSpeed;
+	file >> invertCamera;
+	return true;
+}
+
+bool FEditorSettings::SaveToFile(const std::wstring& filename)
+{
+	std::wofstream file(filename);
+	if (!file.is_open()) return false;
+
+	file << moveSpeed << L"\n"
+		<< rotationSpeed << L"\n"
+		<< invertCamera << L"\n";
+	return true;
+}
+
+void FEditorSettings::UpdateCamValues(float m_moveSpeed, float m_rotationSpeed, bool m_invertCamera)
+{
+	moveSpeed = m_moveSpeed;
+	rotationSpeed = m_rotationSpeed;
+	invertCamera = m_invertCamera;
 }

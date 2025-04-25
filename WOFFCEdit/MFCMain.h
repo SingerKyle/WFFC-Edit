@@ -9,7 +9,7 @@
 #include "resource.h"
 #include "MFCFrame.h"
 #include "SelectDialogue.h"
-#include "ObjectEditDialogue.h"
+#include "TransformsDialogue.h"
 #include "EditorSettingsDialogue.h"
 
 
@@ -23,6 +23,8 @@ public:
 
 	void OnDialogueBoxDestroyed();
 
+	void LoadEditorSettings(const std::wstring& filename);
+
 private:
 
 	CMyFrame * m_frame;	//handle to the frame where all our UI is
@@ -30,7 +32,8 @@ private:
 	ToolMain m_ToolSystem;	//Instance of Tool System that we interface to. 
 	CRect WindowRECT;	//Window area rectangle. 
 	SelectDialogue m_ToolSelectDialogue;			//for modeless dialogue, declare it here
-	ObjectEditDialogue m_ToolEditObjectDialogue;
+	TransformsDialogue m_ToolTransformsDialogue;
+	CommandManager m_commandManager;
 	EditorSettingsDialogue m_ToolEditorSettings;
 
 	int m_width;		
@@ -42,13 +45,12 @@ private:
 	afx_msg void MenuFileSaveTerrain();
 	afx_msg void MenuEditSelect();
 	afx_msg	void ToolBarButton1();
-	afx_msg void AngryButtonFunction();
-	afx_msg void Undo();
-	afx_msg void Redo();
-	afx_msg void EditObjectTransform();
-	afx_msg void EditorSettings();
 
+	afx_msg void Inspector();
+
+	afx_msg void EditorSettings();
 	void OnDialogueBoxCreated();
+
 
 	DECLARE_MESSAGE_MAP()	// required macro for message map functionality  One per class
 };

@@ -11,8 +11,9 @@
 #include "DisplayChunk.h"
 #include "ChunkObject.h"
 #include "InputCommands.h"
-#include "ArcCamera.h"
 #include <vector>
+#include "Camera.h"
+#include "Gizmo.h"
 
 
 // A basic game implementation that creates a D3D11 device and
@@ -39,6 +40,9 @@ public:
 	virtual void OnDeviceLost() override;
 	virtual void OnDeviceRestored() override;
 
+	void MousePicking(std::vector<int>& SelectedIDs);
+	void GizmoPick();
+
 	// Messages
 	void OnActivated();
 	void OnDeactivated();
@@ -48,16 +52,17 @@ public:
 
 	//tool specific
 	void BuildDisplayList(std::vector<SceneObject> * SceneGraph); //note vector passed by reference 
+	void BuildHighlightList();
 	void BuildDisplayChunk(ChunkObject *SceneChunk);
 	void SaveDisplayChunk(ChunkObject *SceneChunk);	//saves geometry et al
 	void ClearDisplayList();
 
-	inline void SetScreenDimensions(RECT viewportDimensions) { m_ScreenDimensions = viewportDimensions; }
+	inline std::shared_ptr<Camera> GetCamera() { return m_camera; };
+	inline std::shared_ptr<Gizmo> GetGizmo() { return m_gizmo; };
 
-	// getters for dialogue boxes
-	inline std::shared_ptr<ArcCamera> GetCamera() { return m_camera; };
+	inline void SetSelectedObjects(std::vector<int> IDs) { m_selectedObjects = IDs; }
 
-	std::vector<int> MousePicking();
+	void SetScreenDimensions(int width, int height);
 
 #ifdef DXTK_AUDIO
 	void NewAudioDevice();
@@ -72,24 +77,28 @@ private:
 
 	void XM_CALLCONV DrawGrid(DirectX::FXMVECTOR xAxis, DirectX::FXMVECTOR yAxis, DirectX::FXMVECTOR origin, size_t xdivs, size_t ydivs, DirectX::GXMVECTOR color);
 
-
 	//tool specific
 	std::vector<DisplayObject>			m_displayList;
+	std::vector<DisplayObject>			m_highlightList;
 	DisplayChunk						m_displayChunk;
 	InputCommands						m_InputCommands;
 	std::vector<int>					m_selectedObjects;
 
+	//camera
+	std::shared_ptr<Camera>				m_camera;
+	std::shared_ptr<Gizmo>				m_gizmo;
+
 	//functionality
 	float								m_movespeed;
+
 	RECT								m_ScreenDimensions;
 
 	//camera
-	std::shared_ptr<ArcCamera>			m_camera;
-	
-	// Mouse Controls
-	float mouseX;
-	float mouseY;
-
+	DirectX::SimpleMath::Vector3		m_camPosition;
+	DirectX::SimpleMath::Vector3		m_camOrientation;
+	DirectX::SimpleMath::Vector3		m_camLookAt;
+	DirectX::SimpleMath::Vector3		m_camLookDirection;
+	DirectX::SimpleMath::Vector3		m_camRight;
 	float m_camRotRate;
 
 	//control variables

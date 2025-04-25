@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "SelectDialogue.h"
-#include "MFCMain.h"
 
 // SelectDialogue dialog
 
@@ -33,7 +32,7 @@ SelectDialogue::~SelectDialogue()
 }
 
 ///pass through pointers to the data in the tool we want to manipulate
-void SelectDialogue::SetObjectData(std::vector<SceneObject>* SceneGraph, std::vector<int> * selection)
+void SelectDialogue::SetObjectData(std::vector<SceneObject>* SceneGraph, int * selection)
 {
 	m_sceneGraph = SceneGraph;
 	m_currentSelection = selection;
@@ -57,8 +56,6 @@ void SelectDialogue::DoDataExchange(CDataExchange* pDX)
 
 void SelectDialogue::End()
 {
-	
-
 	DestroyWindow();	//destory the window properly.  INcluding the links and pointers created.  THis is so the dialogue can start again. 
 }
 
@@ -68,10 +65,9 @@ void SelectDialogue::Select()
 	CString currentSelectionValue;
 	
 	m_listBox.GetText(index, currentSelectionValue);
-	int selectedValue = _ttoi(currentSelectionValue);
 
-	m_currentSelection->clear();
-	m_currentSelection->push_back(selectedValue);
+	*m_currentSelection = _ttoi(currentSelectionValue);
+
 }
 
 BOOL SelectDialogue::OnInitDialog()

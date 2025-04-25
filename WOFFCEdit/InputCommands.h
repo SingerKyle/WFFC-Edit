@@ -12,17 +12,19 @@ struct InputCommands
 	bool				up;
 	bool				down;
 
-	// Interaction Controls
+	// Editor Controls
 	bool				isShiftDown;
+	bool				shouldpick;
 
-	// Mouse Controls & Variables
-	bool				leftMousePressed;
-	bool				leftMouseHeld;
-	bool				rightMousePressed;
+	// Mouse Controls
+	bool				mouse_LB_Down;
+	bool				mouse_LB_Held;
+	bool				mouse_RB_Down;
 
-	// Camera movement - mouse
-	int					mouseDeltaX;
-	int					mouseDeltaY;
+	// Camera movement - mouse 
+	int					mouse_X;
+	int					mouse_Y;
+	
 
-	// Undo / Redo Selection
+	
 };

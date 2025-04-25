@@ -6,7 +6,8 @@
 #include "Game.h"
 #include "DisplayObject.h"
 #include <string>
-#include <iostream>
+#include "Camera.h"
+#include "Gizmo.h"
 
 
 using namespace DirectX;
@@ -26,32 +27,38 @@ Game::Game()
 	m_grid = false;
 
 	//functional
-	m_movespeed = 125.f;
-	m_camRotRate = 10.0f;
+	/*m_movespeed = 0.30;
+	m_camRotRate = 3.0;
 
 	//camera
-    
-	// Maybe don't need to include all of the 0 vector3's, ask in lab.
-	/*m_camera = std::make_unique<ArcCamera>(m_movespeed, m_camRotRate,
-        Vector3(0.0f, 3.7f, -3.5f),  
-        Vector3::Zero,   
-        Vector3::Zero,   
-        Vector3(0.f,0.f,1.f),
-        Vector3::Zero 
-    );*/
+	m_camPosition.x = 0.0f;
+	m_camPosition.y = 3.7f;
+	m_camPosition.z = -3.5f;
 
-    m_camera = std::make_shared<ArcCamera>(m_movespeed, m_camRotRate,
-        Vector3(0.0f, 3.7f, -3.5f),
-        Vector3::Zero,
-        Vector3::Zero,
-        Vector3(0.f, 0.f, 1.f),
-        Vector3::Zero
-    );
+	m_camOrientation.x = 0;
+	m_camOrientation.y = 0;
+	m_camOrientation.z = 0;
 
-    mouseX = 0.0f;
-    mouseY = 0.0f;
+	m_camLookAt.x = 0.0f;
+	m_camLookAt.y = 0.0f;
+	m_camLookAt.z = 0.0f;
 
-    m_ScreenDimensions = { 0,0,0,0 };
+	m_camLookDirection.x = 0.0f;
+	m_camLookDirection.y = 0.0f;
+	m_camLookDirection.z = 0.0f;
+
+	m_camRight.x = 0.0f;
+	m_camRight.y = 0.0f;
+	m_camRight.z = 0.0f;
+
+	m_camOrientation.x = 0.0f;
+	m_camOrientation.y = 0.0f;
+	m_camOrientation.z = 0.0f;*/
+
+	m_camera = std::make_shared<Camera>();
+	m_gizmo = std::make_shared<Gizmo>();
+
+	m_ScreenDimensions = { 0,0,0,0 };
 }
 
 Game::~Game()
@@ -77,13 +84,15 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_deviceResources->SetWindow(window, width, height);
 
-    GetClientRect(window, &m_ScreenDimensions);
-
     m_deviceResources->CreateDeviceResources();
     CreateDeviceDependentResources();
 
     m_deviceResources->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
+
+	GetClientRect(window, &m_ScreenDimensions);
+	
+	m_gizmo->SetScreenDimensions(m_ScreenDimensions);
 
 #ifdef DXTK_AUDIO
     // Create DirectXTK for Audio objects
@@ -125,8 +134,6 @@ void Game::Tick(InputCommands *Input)
         Update(m_timer);
     });
 
-    m_camera->Tick(Input);
-
 #ifdef DXTK_AUDIO
     // Only update audio engine once per frame
     if (!m_audEngine->IsCriticalError() && m_audEngine->Update())
@@ -143,29 +150,72 @@ void Game::Tick(InputCommands *Input)
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
+	// Get current mouse state
+	DirectX::Mouse::State mouseState = m_mouse->GetState();
 
-    // Get current mouse state
-    DirectX::Mouse::State mouseState = m_mouse->GetState();
-    
-    if (m_InputCommands.leftMouseHeld && m_selectedObjects.size() == 1)
-    {
-        m_camera->ArcCamUpdate((m_displayList[m_selectedObjects[0]].m_position), m_displayList[m_selectedObjects[0]].m_scale.x, timer);
-    }
-    else
-    {
-        //size_t size = m_selectedObjects.size();
-        //bool status = m_InputCommands.leftMouseHeld;
-        //wchar_t buffer[256]; // Make sure the buffer is large enough
-        //const wchar_t* statusStr = status ? L"true" : L"false";
-        //swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"We're in the camera update, size of selectedObjects = %zu, status = %s\n", size, statusStr);
+	if (m_InputCommands.mouse_LB_Held && m_selectedObjects.size() == 1)
+	{
+		
+	}
+	else
+	{
+		//size_t size = m_selectedObjects.size();
+		//bool status = m_InputCommands.leftMouseHeld;
+		//wchar_t buffer[256]; // Make sure the buffer is large enough
+		//const wchar_t* statusStr = status ? L"true" : L"false";
+		//swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"We're in the camera update, size of selectedObjects = %zu, status = %s\n", size, statusStr);
 
-        //OutputDebugStringW(buffer);
-        m_camera->Update(timer);
-    }
-    
+		//OutputDebugStringW(buffer);
+		m_camera->Update(timer, &m_InputCommands);
+	}
+
+	m_view = m_camera->GetViewMatrix();
+
+	m_gizmo->Update(&m_InputCommands, m_view, m_projection);
+
+	/*Vector3 planarMotionVector = m_camLookDirection;
+	planarMotionVector.y = 0.0;
+
+	if (m_InputCommands.rotRight)
+	{
+		m_camOrientation.y -= m_camRotRate;
+	}
+	if (m_InputCommands.rotLeft)
+	{
+		m_camOrientation.y += m_camRotRate;
+	}
+
+	//create look direction from Euler angles in m_camOrientation
+	m_camLookDirection.x = sin((m_camOrientation.y)*3.1415 / 180);
+	m_camLookDirection.z = cos((m_camOrientation.y)*3.1415 / 180);
+	m_camLookDirection.Normalize();
+
+	//create right vector from look Direction
+	m_camLookDirection.Cross(Vector3::UnitY, m_camRight);
+
+	//process input and update stuff
+	if (m_InputCommands.forward)
+	{	
+		m_camPosition += m_camLookDirection*m_movespeed;
+	}
+	if (m_InputCommands.back)
+	{
+		m_camPosition -= m_camLookDirection*m_movespeed;
+	}
+	if (m_InputCommands.right)
+	{
+		m_camPosition += m_camRight*m_movespeed;
+	}
+	if (m_InputCommands.left)
+	{
+		m_camPosition -= m_camRight*m_movespeed;
+	}
+
+	//update lookat point
+	m_camLookAt = m_camPosition + m_camLookDirection;
 
 	//apply camera vectors
-    m_view = m_camera->GetViewMatrix();
+    m_view = Matrix::CreateLookAt(m_camPosition, m_camLookAt, Vector3::UnitY);*/
 
     m_batchEffect->SetView(m_view);
     m_batchEffect->SetWorld(Matrix::Identity);
@@ -228,6 +278,17 @@ void Game::Render()
 	WCHAR   Buffer[256];
 	std::wstring var = L"Cam X: " + std::to_wstring(m_camera->GetPosition().x) + L"Cam Z: " + std::to_wstring(m_camera->GetPosition().z);
 	m_font->DrawString(m_sprites.get(), var.c_str() , XMFLOAT2(100, 10), Colors::Yellow);
+
+	// Also display gizmo position
+	if (m_selectedObjects.size() > 0) {
+		std::wstring gizmoPos = L"Gizmo: " + std::to_wstring(m_gizmo->GetPosition().x) +
+			L", " + std::to_wstring(m_gizmo->GetPosition().y) +
+			L", " + std::to_wstring(m_gizmo->GetPosition().z);
+		m_font->DrawString(m_sprites.get(), gizmoPos.c_str(), XMFLOAT2(100, 30), Colors::Yellow);
+
+		std::wstring Object = L"Selected Object: " + std::to_wstring(m_selectedObjects[0]);
+		m_font->DrawString(m_sprites.get(), Object.c_str(), XMFLOAT2(100, 50), Colors::Yellow);
+	}
 	m_sprites->End();
 
 	//RENDER OBJECTS FROM SCENEGRAPH
@@ -245,10 +306,29 @@ void Game::Render()
 
 		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
 
-		m_displayList[i].m_model->Draw(context, *m_states, local, m_view, m_projection, m_displayList[i].m_wireframe);	//last variable in draw,  make TRUE for wireframe
+		m_displayList[i].m_model->Draw(context, *m_states, local, m_view, m_projection, false);	//last variable in draw,  make TRUE for wireframe
 
 		m_deviceResources->PIXEndEvent();
 	}
+	
+	for (auto& highlight : m_highlightList)
+	{
+		m_deviceResources->PIXBeginEvent(L"Draw model");
+		const XMVECTORF32 scale = { highlight.m_scale.x, highlight.m_scale.y, highlight.m_scale.z };
+		const XMVECTORF32 translate = { highlight.m_position.x, highlight.m_position.y, highlight.m_position.z };
+
+		//convert degrees into radians for rotation matrix
+		XMVECTOR rotate = Quaternion::CreateFromYawPitchRoll(highlight.m_orientation.y * 3.1415 / 180,
+		highlight.m_orientation.x * 3.1415 / 180,
+			highlight.m_orientation.z * 3.1415 / 180);
+
+		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
+
+		highlight.m_model->Draw(context, *m_states, local, m_view, m_projection, false);
+
+		m_deviceResources->PIXEndEvent();
+	}
+
     m_deviceResources->PIXEndEvent();
 
 	//RENDER TERRAIN
@@ -256,6 +336,37 @@ void Game::Render()
 	context->OMSetDepthStencilState(m_states->DepthDefault(),0);
 	context->RSSetState(m_states->CullNone());
 //	context->RSSetState(m_states->Wireframe());		//uncomment for wireframe
+
+	// Gizmo
+	if (m_selectedObjects.size() > 0)
+	{
+		m_gizmo->SetActive(true);
+		m_deviceResources->PIXBeginEvent(L"Draw gizmo");
+		auto context = m_deviceResources->GetD3DDeviceContext();
+
+		ID3D11DepthStencilState* currentDepthState = nullptr;
+		UINT currentStencilRef = 0;
+		context->OMGetDepthStencilState(&currentDepthState, &currentStencilRef);
+
+		m_batchEffect->SetWorld(DirectX::SimpleMath::Matrix::Identity);
+		m_batchEffect->SetView(m_view);
+		m_batchEffect->SetProjection(m_projection);
+		m_batchEffect->Apply(context);
+
+		context->IASetInputLayout(m_batchInputLayout.Get());
+		m_batch->Begin();
+		m_gizmo->Draw(m_batch.get());
+		m_batch->End();
+
+		context->OMSetDepthStencilState(currentDepthState, currentStencilRef);
+		if (currentDepthState) currentDepthState->Release();
+
+		m_deviceResources->PIXEndEvent();
+	}
+	else
+	{
+		m_gizmo->SetActive(false);
+	}
 
 	//Render the batch,  This is handled in the Display chunk becuase it has the potential to get complex
 	m_displayChunk.RenderBatch(m_deviceResources);
@@ -267,6 +378,8 @@ void Game::Render()
 void Game::Clear()
 {
     m_deviceResources->PIXBeginEvent(L"Clear");
+
+	m_highlightList.clear();
 
     // Clear the views.
     auto context = m_deviceResources->GetD3DDeviceContext();
@@ -293,7 +406,10 @@ void XM_CALLCONV Game::DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVECTOR orig
     context->OMSetDepthStencilState(m_states->DepthNone(), 0);
     context->RSSetState(m_states->CullCounterClockwise());
 
-    m_batchEffect->Apply(context);
+	m_batchEffect->SetWorld(DirectX::SimpleMath::Matrix::Identity);
+	m_batchEffect->SetView(m_view);
+	m_batchEffect->SetProjection(m_projection);
+	m_batchEffect->Apply(context);
 
     context->IASetInputLayout(m_batchInputLayout.Get());
 
@@ -326,9 +442,15 @@ void XM_CALLCONV Game::DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVECTOR orig
         m_batch->DrawLine(v1, v2);
     }
 
-    m_batch->End();
+	VertexPositionColor testLine[] = {
+	{ Vector3(0,0,0), Colors::Red },
+	{ Vector3(500,0,0), Colors::Red }
+	};
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, testLine, 2);
 
-    m_deviceResources->PIXEndEvent();
+	m_batch->End();
+
+	m_deviceResources->PIXEndEvent();
 }
 #pragma endregion
 
@@ -360,13 +482,12 @@ void Game::OnResuming()
 
 void Game::OnWindowSizeChanged(int width, int height)
 {
-    // For some reason the window changing sizes messes with the selection, need to fix!
-
     if (!m_deviceResources->WindowSizeChanged(width, height))
         return;
 
-    //m_ScreenDimensions.right = width;
-    //m_ScreenDimensions.bottom = height;
+	SetScreenDimensions(width, height);
+
+	m_gizmo->SetScreenDimensions(width, height);
 
     CreateWindowSizeDependentResources();
 }
@@ -379,6 +500,11 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 	if (!m_displayList.empty())		//is the vector empty
 	{
 		m_displayList.clear();		//if not, empty it
+	}
+
+	if (!m_highlightList.empty())		//is the vector empty
+	{
+		m_highlightList.clear();		//if not, empty it
 	}
 
 	//for every item in the scenegraph
@@ -414,6 +540,9 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 			}
 		});
 
+		// set ID
+		newDisplayObject.m_ID = SceneGraph->at(i).ID;
+
 		//set position
 		newDisplayObject.m_position.x = SceneGraph->at(i).posX;
 		newDisplayObject.m_position.y = SceneGraph->at(i).posY;
@@ -445,38 +574,30 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		newDisplayObject.m_light_linear		= SceneGraph->at(i).light_linear;
 		newDisplayObject.m_light_quadratic	= SceneGraph->at(i).light_quadratic;
 		
+		if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
+		{
+			DisplayObject objectHighlight = newDisplayObject;
+
+			newDisplayObject.m_ID = -1;
+			newDisplayObject.m_wireframe = true;
+
+			newDisplayObject.m_model->UpdateEffects([&](IEffect* effect)
+				{
+					auto fog = dynamic_cast<IEffectFog*>(effect);
+
+					if (fog) {
+						fog->SetFogEnabled(true);
+						fog->SetFogStart(0);
+						fog->SetFogEnd(1);
+						fog->SetFogColor(Colors::GhostWhite);
+					}
+				});
+
+			
+		}
+
 		m_displayList.push_back(newDisplayObject);
-
-        // Effect for object selection.
-        // https://github.com/microsoft/DirectXTK/wiki/Effects
-		
-        if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
-        {
-            DisplayObject objectHighlight = newDisplayObject;
-
-            objectHighlight.m_ID = -1;
-            objectHighlight.m_wireframe = true;
-
-            objectHighlight.m_model->UpdateEffects([&](IEffect* effect)
-                {
-                    auto fog = dynamic_cast<IEffectFog*>(effect);
-
-                    if (fog) {
-                        fog->SetFogEnabled(true);
-                        fog->SetFogStart(0);
-                        fog->SetFogEnd(0); // 0,0 for one object distance irrelevant as incressed math will slow down the program;
-
-                        fog->SetFogColor(Colors::GhostWhite);
-
-                    }
-                });
-
-            m_displayList.push_back(objectHighlight);
-        }
-
 	}
-		
-		
 		
 }
 
@@ -495,6 +616,12 @@ void Game::SaveDisplayChunk(ChunkObject * SceneChunk)
 	m_displayChunk.SaveHeightMap();			//save heightmap to file.
 }
 
+void Game::SetScreenDimensions(int width, int height)
+{
+	m_ScreenDimensions.right = width;
+	m_ScreenDimensions.bottom = height;
+}
+
 #ifdef DXTK_AUDIO
 void Game::NewAudioDevice()
 {
@@ -509,104 +636,6 @@ void Game::NewAudioDevice()
 
 
 #pragma endregion
-
-std::vector<int> Game::MousePicking()
-{
-    std::vector<int> selectedIDs;
-    float closestDistance = FLT_MAX;
-    int closestObjectID = -1;
-
-    //setup near and far planes of frustum with mouse X and mouse y passed down from Toolmain. 
-    //they may look the same but note, the difference in Z
-    const XMVECTOR nearSource = XMVectorSet(m_InputCommands.mouseDeltaX, m_InputCommands.mouseDeltaY, 0.0f, 1.0f);
-    const XMVECTOR farSource = XMVectorSet(m_InputCommands.mouseDeltaX, m_InputCommands.mouseDeltaY, 1.0f, 1.0f);
-
-    //Loop through entire display list of objects and pick with each in turn. 
-    for (int i = 0; i < m_displayList.size(); i++)
-    {
-        //Get the scale factor and translation of the object
-        const XMVECTORF32 scale = { m_displayList[i].m_scale.x,		m_displayList[i].m_scale.y,		m_displayList[i].m_scale.z };
-        const XMVECTORF32 translate = { m_displayList[i].m_position.x,	m_displayList[i].m_position.y,	m_displayList[i].m_position.z };
-
-        //convert euler angles into a quaternion for the rotation of the object
-        XMVECTOR rotate = Quaternion::CreateFromYawPitchRoll(m_displayList[i].m_orientation.y * 3.1415 / 180,
-            m_displayList[i].m_orientation.x * 3.1415 / 180,
-            m_displayList[i].m_orientation.z * 3.1415 / 180);
-
-        //create set the matrix of the selected object in the world based on the translation, scale and rotation.
-        XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
-
-        //Unproject the points on the near and far plane, with respect to the matrix we just created.
-        XMVECTOR nearPoint = XMVector3Unproject(nearSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_camera->GetViewMatrix(), local);
-        XMVECTOR farPoint = XMVector3Unproject(farSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_camera->GetViewMatrix(), local);
-
-        //turn the transformed points into our picking vector. 
-        XMVECTOR pickingVector = farPoint - nearPoint;
-        pickingVector = XMVector3Normalize(pickingVector);
-
-        //loop through mesh list for object
-        for (int y = 0; y < m_displayList[i].m_model.get()->meshes.size(); y++)
-        {
-            float PickedDistance = 0;
-            if (m_displayList[i].m_model.get()->meshes[y]->boundingBox.Intersects(nearPoint, pickingVector, PickedDistance))
-            {
-                // If this hit is closer than any previous hit
-                if (PickedDistance < closestDistance)
-                {
-                    closestDistance = PickedDistance;
-                    closestObjectID = i;
-                }
-            }
-        }
-    }
-
-    // handle selection / deselection
-    if (closestObjectID != -1)
-    {
-        // check if user wants to select multiple objects
-        bool shouldMultiSelect = m_InputCommands.isShiftDown;
-
-        // check if object is already selected
-        auto it = std::find(m_selectedObjects.begin(), m_selectedObjects.end(), closestObjectID);
-        bool isAlreadySelected = (it != m_selectedObjects.end());
-
-        if (shouldMultiSelect)
-        {
-            if (isAlreadySelected)
-            {
-                // Deselect if already selected
-                m_selectedObjects.erase(it);
-            }
-            else
-            {
-                // Add to selection
-                m_selectedObjects.push_back(closestObjectID);
-            }
-        }
-        else
-        {
-            // clear existing selection and select new object, if it's the same object we toggle selection
-            if (m_selectedObjects.size() == 1 && isAlreadySelected)
-            {
-                // Deselect the only selected object
-                m_selectedObjects.clear();
-            }
-            else
-            {
-                // Clear selection and select new object
-                m_selectedObjects.clear();
-                m_selectedObjects.push_back(closestObjectID);
-            }
-        }
-    }
-    else
-    {
-        m_selectedObjects.clear();
-    }
-
-    //if we got a hit.  return it.  
-    return m_selectedObjects;
-}
 
 #pragma region Direct3D Resources
 // These are the resources that depend on the device.
@@ -707,6 +736,100 @@ void Game::OnDeviceRestored()
     CreateDeviceDependentResources();
 
     CreateWindowSizeDependentResources();
+}
+void Game::MousePicking(std::vector<int>& SelectedIDs)
+{
+	//std::vector<int> SelectedIDs;
+	int selectedID = -1;
+	float pickedDistance = 0;
+
+	//setup near and far planes of frustum with mouse X and mouse y passed down from Toolmain. 
+		//they may look the same but note, the difference in Z
+	const XMVECTOR nearSource = XMVectorSet(m_InputCommands.mouse_X, m_InputCommands.mouse_Y, 0.0f, 1.0f);
+	const XMVECTOR farSource = XMVectorSet(m_InputCommands.mouse_X, m_InputCommands.mouse_Y, 1.0f, 1.0f);
+
+	//Loop through entire display list of objects and pick with each in turn. 
+	for (int i = 0; i < m_displayList.size(); i++)
+	{
+		//Get the scale factor and translation of the object
+		const XMVECTORF32 scale = { m_displayList[i].m_scale.x,		m_displayList[i].m_scale.y,		m_displayList[i].m_scale.z };
+		const XMVECTORF32 translate = { m_displayList[i].m_position.x,		m_displayList[i].m_position.y,	m_displayList[i].m_position.z };
+
+		//convert euler angles into a quaternion for the rotation of the object
+		XMVECTOR rotate = Quaternion::CreateFromYawPitchRoll(m_displayList[i].m_orientation.y * 3.1415 / 180, m_displayList[i].m_orientation.x * 3.1415 / 180,
+			m_displayList[i].m_orientation.z * 3.1415 / 180);
+
+		//create set the matrix of the selected object in the world based on the translation, scale and rotation.
+		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
+
+		//Unproject the points on the near and far plane, with respect to the matrix we just created.
+		XMVECTOR nearPoint = XMVector3Unproject(nearSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_view, local);
+
+		XMVECTOR farPoint = XMVector3Unproject(farSource, 0.0f, 0.0f, m_ScreenDimensions.right, m_ScreenDimensions.bottom, m_deviceResources->GetScreenViewport().MinDepth, m_deviceResources->GetScreenViewport().MaxDepth, m_projection, m_view, local);
+
+		//turn the transformed points into our picking vector. 
+		XMVECTOR pickingVector = farPoint - nearPoint;
+		pickingVector = XMVector3Normalize(pickingVector);
+
+		//loop through mesh list for object
+		for (int y = 0; y < m_displayList[i].m_model.get()->meshes.size(); y++)
+		{
+			//checking for ray intersection
+			if (m_displayList[i].m_model.get()->meshes[y]->boundingBox.Intersects(nearPoint, pickingVector, pickedDistance) && m_displayList[i].m_ID != -1)
+			{
+				selectedID = m_displayList[i].m_ID;
+			}
+		}
+	}
+
+	if (selectedID != -1)
+	{
+		// check if user wants to select multiple objects
+		bool shouldMultiSelect = m_InputCommands.isShiftDown;
+
+		// check if object is already selected
+		auto it = std::find(SelectedIDs.begin(), SelectedIDs.end(), selectedID);
+		bool isAlreadySelected = (it != SelectedIDs.end());
+
+		if (shouldMultiSelect)
+		{
+			if (isAlreadySelected)
+			{
+				// Deselect if already selected
+				SelectedIDs.erase(it);
+			}
+			else
+			{
+				// Add to selection
+				SelectedIDs.push_back(selectedID);
+			}
+		}
+		else
+		{
+			// clear existing selection and select new object, if it's the same object we toggle selection
+			if (SelectedIDs.size() == 1 && isAlreadySelected)
+			{
+				// Deselect the only selected object
+				SelectedIDs.clear();
+			}
+			else
+			{
+				// Clear selection and select new object
+				SelectedIDs.clear();
+				SelectedIDs.push_back(selectedID);
+			}
+		}
+	}
+	else
+	{
+		SelectedIDs.clear();
+	}
+
+
+}
+void Game::GizmoPick()
+{
+	m_gizmo->Update(&m_InputCommands, m_view, m_projection);
 }
 #pragma endregion
 

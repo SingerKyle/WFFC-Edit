@@ -2,8 +2,6 @@
 #include "resource.h"
 #include <vector>
 #include <sstream>
-#include <optional>
-
 
 //
 //ToolMain Class
@@ -11,21 +9,30 @@ ToolMain::ToolMain()
 {
 
 	m_currentChunk = 0;		//default value
-	m_selectedObjects;		//initial selection ID
 	m_sceneGraph.clear();	//clear the vector for the scenegraph
 	m_databaseConnection = NULL;
 
 	//zero input commands
-	m_toolInputCommands.forward = false;
-	m_toolInputCommands.back = false;
-	m_toolInputCommands.left = false;
-	m_toolInputCommands.right = false;
+	bool forward = false;
+	bool back = false;
+	bool right = false;
+	bool left = false;
+	bool rotRight = false;
+	bool rotLeft = false;
+	bool up = false;
+	bool down = false;
 
-	m_toolInputCommands.rightMousePressed = false;
-	m_toolInputCommands.leftMousePressed = false;
+	// Editor Controls
+	bool isShiftDown = false;
 
-	m_toolInputCommands.isShiftDown = false;
+	// Mouse Controls
+	bool mouse_LB_Down = false;
+	bool mouse_RB_Down = false;
 
+	// Camera movement - mouse 
+	int mouse_X = 0;
+	int mouse_Y = 0;
+	
 	WindowOpen = false;
 }
 
@@ -38,30 +45,27 @@ ToolMain::~ToolMain()
 
 std::vector<int> ToolMain::getCurrentSelectionID()
 {
-
 	return m_selectedObjects;
 }
 
 void ToolMain::onActionInitialise(HWND handle, int width, int height)
 {
 	//window size, handle etc for directX
-	m_width = width;
-	m_height = height;
-
-	m_toolHandle = handle;
-
+	m_width		= width;
+	m_height	= height;
+	
 	m_d3dRenderer.Initialize(handle, m_width, m_height);
 
 	//database connection establish
 	int rc;
-	rc = sqlite3_open_v2("database/test.db", &m_databaseConnection, SQLITE_OPEN_READWRITE, NULL);
+	rc = sqlite3_open_v2("database/test.db",&m_databaseConnection, SQLITE_OPEN_READWRITE, NULL);
 
-	if (rc)
+	if (rc) 
 	{
 		TRACE("Can't open database");
 		//if the database cant open. Perhaps a more catastrophic error would be better here
 	}
-	else
+	else 
 	{
 		TRACE("Opened database successfully");
 	}
@@ -79,24 +83,24 @@ void ToolMain::onActionLoad()
 
 	//SQL
 	int rc;
-	char* sqlCommand;
-	char* ErrMSG = 0;
-	sqlite3_stmt* pResults;								//results of the query
-	sqlite3_stmt* pResultsChunk;
+	char *sqlCommand;
+	char *ErrMSG = 0;
+	sqlite3_stmt *pResults;								//results of the query
+	sqlite3_stmt *pResultsChunk;
 
 	//OBJECTS IN THE WORLD
 	//prepare SQL Text
 	sqlCommand = "SELECT * from Objects";				//sql command which will return all records from the objects table.
 	//Send Command and fill result object
-	rc = sqlite3_prepare_v2(m_databaseConnection, sqlCommand, -1, &pResults, 0);
-
+	rc = sqlite3_prepare_v2(m_databaseConnection, sqlCommand, -1, &pResults, 0 );
+	
 	//loop for each row in results until there are no more rows.  ie for every row in the results. We create and object
 	while (sqlite3_step(pResults) == SQLITE_ROW)
-	{
+	{	
 		SceneObject newSceneObject;
 		newSceneObject.ID = sqlite3_column_int(pResults, 0);
 		newSceneObject.chunk_ID = sqlite3_column_int(pResults, 1);
-		newSceneObject.model_path = reinterpret_cast<const char*>(sqlite3_column_text(pResults, 2));
+		newSceneObject.model_path		= reinterpret_cast<const char*>(sqlite3_column_text(pResults, 2));
 		newSceneObject.tex_diffuse_path = reinterpret_cast<const char*>(sqlite3_column_text(pResults, 3));
 		newSceneObject.posX = sqlite3_column_double(pResults, 4);
 		newSceneObject.posY = sqlite3_column_double(pResults, 5);
@@ -151,7 +155,7 @@ void ToolMain::onActionLoad()
 		newSceneObject.light_constant = sqlite3_column_double(pResults, 53);
 		newSceneObject.light_linear = sqlite3_column_double(pResults, 54);
 		newSceneObject.light_quadratic = sqlite3_column_double(pResults, 55);
-
+	
 
 		//send completed object to scenegraph
 		m_sceneGraph.push_back(newSceneObject);
@@ -160,7 +164,7 @@ void ToolMain::onActionLoad()
 	//THE WORLD CHUNK
 	//prepare SQL Text
 	sqlCommand = "SELECT * from Chunks";				//sql command which will return all records from  chunks table. There is only one tho.
-	//Send Command and fill result object
+														//Send Command and fill result object
 	rc = sqlite3_prepare_v2(m_databaseConnection, sqlCommand, -1, &pResultsChunk, 0);
 
 
@@ -197,10 +201,10 @@ void ToolMain::onActionSave()
 {
 	//SQL
 	int rc;
-	char* sqlCommand;
-	char* ErrMSG = 0;
-	sqlite3_stmt* pResults;								//results of the query
-
+	char *sqlCommand;
+	char *ErrMSG = 0;
+	sqlite3_stmt *pResults;								//results of the query
+	
 
 	//OBJECTS IN THE WORLD Delete them all
 	//prepare SQL Text
@@ -215,10 +219,10 @@ void ToolMain::onActionSave()
 	for (int i = 0; i < numObjects; i++)
 	{
 		std::stringstream command;
-		command << "INSERT INTO Objects "
-			<< "VALUES(" << m_sceneGraph.at(i).ID << ","
-			<< m_sceneGraph.at(i).chunk_ID << ","
-			<< "'" << m_sceneGraph.at(i).model_path << "'" << ","
+		command << "INSERT INTO Objects " 
+			<<"VALUES(" << m_sceneGraph.at(i).ID << ","
+			<< m_sceneGraph.at(i).chunk_ID  << ","
+			<< "'" << m_sceneGraph.at(i).model_path <<"'" << ","
 			<< "'" << m_sceneGraph.at(i).tex_diffuse_path << "'" << ","
 			<< m_sceneGraph.at(i).posX << ","
 			<< m_sceneGraph.at(i).posY << ","
@@ -277,7 +281,7 @@ void ToolMain::onActionSave()
 			<< ")";
 		std::string sqlCommand2 = command.str();
 		rc = sqlite3_prepare_v2(m_databaseConnection, sqlCommand2.c_str(), -1, &pResults, 0);
-		sqlite3_step(pResults);
+		sqlite3_step(pResults);	
 	}
 	MessageBox(NULL, L"Objects Saved", L"Notification", MB_OK);
 }
@@ -287,17 +291,7 @@ void ToolMain::onActionSaveTerrain()
 	m_d3dRenderer.SaveDisplayChunk(&m_chunk);
 }
 
-void ToolMain::ResizeWindow(int width, int height)
-{
-	m_d3dRenderer.OnWindowSizeChanged(width, height);
-}
-
-void ToolMain::UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls)
-{
-	m_d3dRenderer.GetCamera()->UpdateCamValues(moveSpeed, camRotRate, invertControls);
-}
-
-void ToolMain::Tick(MSG* msg)
+void ToolMain::Tick(MSG *msg)
 {
 	//do we have a selection
 	//do we have a mode
@@ -307,20 +301,74 @@ void ToolMain::Tick(MSG* msg)
 		//add to scenegraph
 		//resend scenegraph to Direct X renderer
 
-	CWnd* myDXFrame = CWnd::FromHandle(m_toolHandle);
-	CRect dxViewRect;
-	myDXFrame->GetWindowRect(dxViewRect);
-
-	m_d3dRenderer.SetScreenDimensions(dxViewRect);
-
 	//Renderer Update Call
 	m_d3dRenderer.Tick(&m_toolInputCommands);
 
-	if (m_toolInputCommands.leftMousePressed && !m_toolInputCommands.leftMouseHeld && !WindowOpen)
+	if (m_toolInputCommands.mouse_LB_Down && !WindowOpen)
 	{
-		m_selectedObjects = m_d3dRenderer.MousePicking();
+		m_d3dRenderer.GizmoPick();
+
+		if (!m_d3dRenderer.GetGizmo()->GetDragging())
+		{
+			m_d3dRenderer.MousePicking(m_selectedObjects);
+			m_d3dRenderer.SetSelectedObjects(m_selectedObjects);
+			m_toolInputCommands.mouse_LB_Down = false;
+		}
+
 		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
-		m_toolInputCommands.leftMousePressed = false;
+
+		// GIZMO STUFF
+		if (!m_selectedObjects.empty() && !m_d3dRenderer.GetGizmo()->GetDragging())
+		{
+			int selectedID = m_selectedObjects[0];
+
+			// Find the selected object in the scene graph
+			SceneObject* selectedObject = nullptr;
+
+			for (auto& obj : m_sceneGraph)
+			{
+				if (obj.ID == selectedID) // Assuming m_ID exists and matches correctly
+				{
+					selectedObject = &obj;
+					break;
+				}
+			}
+
+			if (selectedObject != nullptr)
+			{
+				// Set gizmo position to selected object's position
+				m_d3dRenderer.GetGizmo()->SetPosition(DirectX::SimpleMath::Vector3(selectedObject->posX, selectedObject->posY, selectedObject->posZ));
+
+			}
+		}
+		else if (m_toolInputCommands.mouse_LB_Down && !m_selectedObjects.empty())
+		{
+			int selectedID = m_selectedObjects[0];
+
+			// Find the selected object in the scene graph
+			SceneObject* selectedObject = nullptr;
+
+			for (auto& obj : m_sceneGraph)
+			{
+				if (obj.ID == selectedID) // Assuming m_ID exists and matches correctly
+				{
+					selectedObject = &obj;
+					break;
+				}
+			}
+
+			if (selectedObject != nullptr)
+			{
+				// Update object position based on gizmo movement
+				DirectX::SimpleMath::Vector3 newPosition = m_d3dRenderer.GetGizmo()->GetPosition();
+
+				// Update the selected object's position
+				selectedObject->posX = newPosition.x;
+				selectedObject->posY = newPosition.y;
+				selectedObject->posZ = newPosition.z;
+			}
+		}
+
 
 		/*if (m_selectedObjects.empty())
 		{
@@ -333,18 +381,17 @@ void ToolMain::Tick(MSG* msg)
 
 	}
 
-	// Check if mouse button is being held
 	if (m_leftMouseDownTime != std::chrono::steady_clock::time_point{})
 	{
 		auto elapsedTime = std::chrono::steady_clock::now() - m_leftMouseDownTime;
 		if (elapsedTime > holdThreshold)
 		{
-			m_toolInputCommands.leftMouseHeld = true;
+			m_toolInputCommands.mouse_LB_Held = true;
 		}
 	}
 }
 
-void ToolMain::UpdateInput(MSG* msg)
+void ToolMain::UpdateInput(MSG * msg)
 {
 	int mouseX;
 	int mouseY;
@@ -361,52 +408,36 @@ void ToolMain::UpdateInput(MSG* msg)
 		break;
 
 	case WM_MOUSEMOVE:
-		// Get the current mouse position from msg->lParam
-		mouseX = GET_X_LPARAM(msg->lParam);
-		mouseY = GET_Y_LPARAM(msg->lParam);
+		//update the mouse X and Y which will be sent thru to the Renderer.
+		m_toolInputCommands.mouse_X = GET_X_LPARAM(msg->lParam);
+		m_toolInputCommands.mouse_Y = GET_Y_LPARAM(msg->lParam);
 
-		// Calculate the mouse deltas
-		m_toolInputCommands.mouseDeltaX = mouseX;
-		m_toolInputCommands.mouseDeltaY = mouseY;
-
+		m_cursorPos.x = GET_X_LPARAM(msg->lParam);
+		m_cursorPos.y = GET_Y_LPARAM(msg->lParam);
 		break;
 
-	case WM_LBUTTONDOWN:	//Left Mouse Button Down
-		m_toolInputCommands.leftMousePressed = true;
-		m_leftMouseDownTime = std::chrono::steady_clock::now();
-		m_toolInputCommands.leftMouseHeld = false;
+	case WM_LBUTTONDOWN:
+		//mouse left pressed.	
+		m_toolInputCommands.mouse_LB_Down = true;
+
+		m_cursorPos.x = GET_X_LPARAM(msg->lParam);
+		m_cursorPos.y = GET_Y_LPARAM(msg->lParam);
 		break;
 
 	case WM_LBUTTONUP: // Left Mouse Button Up
-		m_toolInputCommands.leftMousePressed = false;
-		m_toolInputCommands.leftMouseHeld = false;
+		m_toolInputCommands.mouse_LB_Down = false;
+		m_toolInputCommands.mouse_LB_Held = false;
 		m_leftMouseDownTime = std::chrono::steady_clock::time_point{};
 		break;
 
 	case WM_RBUTTONDOWN: // Right Mouse Button Down
-		m_toolInputCommands.rightMousePressed = true;
+		m_toolInputCommands.mouse_RB_Down = true;
 		SetCapture(msg->hwnd);
 		break;
 
 	case WM_RBUTTONUP: // Right Mouse Button Up
-		m_toolInputCommands.rightMousePressed = false;
+		m_toolInputCommands.mouse_RB_Down = false;
 		ReleaseCapture();
-		break;
-
-	case WM_MBUTTONDOWN: // Middle Mouse Button Down
-
-		break;
-
-	case WM_MBUTTONUP: // Middle Mouse Button Up
-
-		break;
-
-	case WM_MOUSEWHEEL: // When mouse wheel is scrolled (provides scroll direction and amount).
-
-		break;
-
-	case WM_MOUSEHOVER: // if mouse hovers over certain point
-		
 		break;
 
 	}
@@ -417,7 +448,7 @@ void ToolMain::UpdateInput(MSG* msg)
 		m_toolInputCommands.forward = true;
 	}
 	else m_toolInputCommands.forward = false;
-
+	
 	if (m_keyArray['S'])
 	{
 		m_toolInputCommands.back = true;
@@ -435,6 +466,17 @@ void ToolMain::UpdateInput(MSG* msg)
 	}
 	else m_toolInputCommands.right = false;
 	//rotation
+	if (m_keyArray['E'])
+	{
+		m_toolInputCommands.rotRight = true;
+	}
+	else m_toolInputCommands.rotRight = false;
+	if (m_keyArray['Q'])
+	{
+		m_toolInputCommands.rotLeft = true;
+	}
+	else m_toolInputCommands.rotLeft = false;
+	//rotation
 	if (m_keyArray[VK_SPACE])
 	{
 		m_toolInputCommands.up = true;
@@ -451,9 +493,36 @@ void ToolMain::UpdateInput(MSG* msg)
 	}
 	else m_toolInputCommands.isShiftDown = false;
 
+	//WASD
 }
 
 void ToolMain::OnWindowStatusChanged(bool IsWindowOpen)
 {
 	WindowOpen = IsWindowOpen;
+}
+
+void ToolMain::OnResizeWindow(int width, int height)
+{
+	m_screenDimensions.right = width;
+	m_screenDimensions.bottom = height;
+
+	m_d3dRenderer.OnWindowSizeChanged(width, height);
+}
+
+void ToolMain::UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls)
+{
+	m_d3dRenderer.GetCamera()->UpdateCamValues(moveSpeed, camRotRate, invertControls);
+}
+
+void ToolMain::OnWindowPositionChanged(WINDOWPOS newPos)
+{
+	m_screenDimensions.left = newPos.x;
+	m_screenDimensions.top = newPos.y;
+	m_screenDimensions.right = newPos.cx;
+	m_screenDimensions.bottom = newPos.cy;
+}
+
+Game& ToolMain::GetGame()
+{
+	return m_d3dRenderer;
 }

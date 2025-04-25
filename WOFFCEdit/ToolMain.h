@@ -6,9 +6,9 @@
 #include "sqlite3.h"
 #include "SceneObject.h"
 #include "InputCommands.h"
-#include "Mouse.h"
-#include <chrono>
 #include <vector>
+#include "Camera.h"
+#include <chrono>
 
 using namespace std::chrono;
 using namespace std::literals;
@@ -22,29 +22,37 @@ public: //methods
 
 	//onAction - These are the interface to MFC
 	std::vector<int>		getCurrentSelectionID();										//returns the selection number of currently selected object so that It can be displayed.
-	void					onActionInitialise(HWND handle, int width, int height);			//Passes through handle and hieght and width and initialises DirectX renderer and SQL LITE
-	void					onActionFocusCamera();
-	void					onActionLoad();													//load the current chunk
-	afx_msg	void			onActionSave();													//save the current chunk
-	afx_msg void			onActionSaveTerrain();											//save chunk geometry
-
-	void ResizeWindow(int width, int height);
-
-	// Used to update camera variables from dialogue box
-	void					UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls);
-	inline int				GetWidth() { return m_width; }
-	inline int				GetHeight() { return m_height; }
-	inline std::shared_ptr<ArcCamera> GetCamera() { return m_d3dRenderer.GetCamera(); }
+	void	onActionInitialise(HWND handle, int width, int height);			//Passes through handle and hieght and width and initialises DirectX renderer and SQL LITE
+	void	onActionFocusCamera();
+	void	onActionLoad();													//load the current chunk
+	afx_msg	void	onActionSave();											//save the current chunk
+	afx_msg void	onActionSaveTerrain();									//save chunk geometry
 
 	void	Tick(MSG *msg);
 	void	UpdateInput(MSG *msg);
 
+	//void	UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls);
+
+	inline std::shared_ptr<Camera> GetCamera() { return m_d3dRenderer.GetCamera(); }
+	inline std::shared_ptr<Gizmo> GetGizmo() { return m_d3dRenderer.GetGizmo(); }
+
 	void OnWindowStatusChanged(bool IsWindowOpen);
 
+	void    OnResizeWindow(int width, int height);
+
+	// Used to update camera variables from dialogue box
+	void					UpdateCamValues(float moveSpeed, float camRotRate, bool invertControls);
+
+	void    OnWindowPositionChanged(WINDOWPOS newPos);
+
+	Game& GetGame();
+
 public:	//variables
-	std::vector<SceneObject>    m_sceneGraph;	    //our scenegraph storing all the objects in the current chunk
-	ChunkObject					m_chunk;		    //our landscape chunk
+	std::vector<SceneObject>    m_sceneGraph;	//our scenegraph storing all the objects in the current chunk
+	ChunkObject					m_chunk;		//our landscape chunk
 	std::vector<int>			m_selectedObjects;  //ID of current Selection
+	POINT						m_cursorPos{ 0, 0 };
+	RECT						m_screenDimensions;
 
 private:	//methods
 	void	onContentAdded();
@@ -64,6 +72,8 @@ private:	//variables
 	int m_currentChunk;			//the current chunk of thedatabase that we are operating on.  Dictates loading and saving. 
 	bool WindowOpen;
 	
+
 	std::chrono::steady_clock::time_point			m_leftMouseDownTime;
 	const std::chrono::milliseconds					holdThreshold = 500ms;
+	
 };
