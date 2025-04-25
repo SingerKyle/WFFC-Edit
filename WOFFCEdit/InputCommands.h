@@ -24,6 +24,8 @@ struct InputCommands
 	// Camera movement - mouse 
 	int					mouse_X;
 	int					mouse_Y;
+
+	int					translationNum;
 	
 
 	

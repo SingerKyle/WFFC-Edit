@@ -34,7 +34,11 @@ public:
 	~Gizmo();
 
 	inline void SetPosition(const Vector3& pos) { m_position = pos; };
+	inline void SetRotation(const Vector3& rot) { m_rotation = rot; };
+	inline void SetScale(const Vector3& sca) { m_scale = sca; };
 	inline Vector3 GetPosition() { return m_position; };
+	inline Vector3 GetRotation() { return m_rotation; };
+	inline Vector3 GetScale() { return m_scale; };
 	inline void SetMode(Mode m) { m_mode = m; };
 	inline void SetScreenDimensions(int width, int height) { m_screenDimensions.right = width; m_screenDimensions.bottom = height; }
 	inline void SetScreenDimensions(RECT Dimensions) { m_screenDimensions = Dimensions; }
@@ -53,6 +57,8 @@ public:
 
 private:
 	Vector3 m_position;
+	Vector3 m_rotation;
+	Vector3 m_scale;
 	Mode m_mode;
 	Axis m_activeAxis;
 	GizmoSpace m_gizmoSpace;
@@ -60,7 +66,15 @@ private:
 	bool m_active;
 	Vector2 m_startMousePos;
 	Vector3 m_startObjectPos;
+	Vector3 m_startObjectRot;
+	Vector3 m_startObjectSca;
 	RECT	m_screenDimensions;
+	int translationNum;
+
+	// multipliers for movement
+	int posMultiplier;
+	int rotMultiplier;
+	int scaMultiplier;
 
 	void PickAxis(InputCommands* input, const Matrix& view, const Matrix& proj);
 	void Drag(InputCommands* input, const Matrix& view, const Matrix& proj);

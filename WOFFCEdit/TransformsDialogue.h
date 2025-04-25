@@ -12,6 +12,7 @@ class Game;
 enum class Axis { X, Y, Z };
 enum class Operation { Add, Subtract };
 enum class SelectedButton { None, Plus, Minus, X, Y, Z };
+enum class Transform { Position, Rotation, Scale };
 
 class TransformsDialogue : public CDialogEx
 {
@@ -76,6 +77,7 @@ private:
 	Axis m_selectedAxis = Axis::X;
 	Operation m_operation = Operation::Add;
 	SelectedButton m_selectedButton = SelectedButton::None;
+	Transform m_transforms = Transform::Position;
 
 	// Event handlers
 	afx_msg void OnChangeTransform();

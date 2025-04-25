@@ -57,6 +57,7 @@ void TransformsDialogue::UpdateFromSelectedObject()
 	m_posY.SetWindowTextW(std::to_wstring(posY).c_str());
 	m_posZ.SetWindowTextW(std::to_wstring(posZ).c_str());
 
+	// clamp between -360 and 360
 	m_rotX.SetWindowTextW(std::to_wstring(rotX).c_str());
 	m_rotY.SetWindowTextW(std::to_wstring(rotY).c_str());
 	m_rotZ.SetWindowTextW(std::to_wstring(rotZ).c_str());
@@ -328,23 +329,51 @@ void TransformsDialogue::OnTransformAmountClicked(UINT nID)
 	switch (nID)
 	{
 	case IDC_BTN_POS_1:
+		m_transforms = Transform::Position;
+		amount = 1.0f;
+		break;
 	case IDC_BTN_ROT_1:
+		m_transforms = Transform::Rotation;
+		amount = 1.0f;
+		break;
 	case IDC_BTN_SCALE_1:
+		m_transforms = Transform::Scale;
 		amount = 1.0f; 
 		break;
 	case IDC_BTN_POS_10:  
+		m_transforms = Transform::Position;
+		amount = 10.0f;
+		break;
 	case IDC_BTN_ROT_10:
+		m_transforms = Transform::Rotation;
+		amount = 10.0f;
+		break;
 	case IDC_BTN_SCALE_10:
+		m_transforms = Transform::Scale;
 		amount = 10.0f;
 		break;
 	case IDC_BTN_POS_50:
+		m_transforms = Transform::Position;
+		amount = 50.0f;
+		break;
 	case IDC_BTN_ROT_50:
+		m_transforms = Transform::Rotation;
+		amount = 50.0f;
+		break;
 	case IDC_BTN_SCALE_50:
+		m_transforms = Transform::Scale;
 		amount = 50.0f;
 		break;
 	case IDC_BTN_POS_100:
+		Transform::Position;
+		amount = 100.0f;
+		break;
 	case IDC_BTN_ROT_100:
+		Transform::Rotation;
+		amount = 100.0f;
+		break;
 	case IDC_BTN_SCALE_100:
+		Transform::Scale;
 		amount = 100.0f;
 		break;
 	}
@@ -362,9 +391,48 @@ void TransformsDialogue::OnTransformAmountClicked(UINT nID)
 
 	switch (m_selectedAxis)
 	{
-	case Axis::X: obj.posX += amount; break;
-	case Axis::Y: obj.posY += amount; break;
-	case Axis::Z: obj.posZ += amount; break;
+	case Axis::X:
+		switch (m_transforms)
+		{
+		case Transform::Position:
+			obj.posX += amount;
+			break;
+		case Transform::Rotation:
+			obj.rotX += amount;
+			break;
+		case Transform::Scale:
+			obj.scaX += amount;
+			break;
+		}
+		break;
+	case Axis::Y:
+		switch (m_transforms)
+		{
+		case Transform::Position:
+			obj.posY += amount;
+			break;
+		case Transform::Rotation:
+			obj.rotY += amount;
+			break;
+		case Transform::Scale:
+			obj.scaY += amount;
+			break;
+		}
+		break;
+	case Axis::Z: 
+		switch (m_transforms)
+		{
+		case Transform::Position:
+			obj.posZ += amount;
+			break;
+		case Transform::Rotation:
+			obj.rotZ += amount;
+			break;
+		case Transform::Scale:
+			obj.scaZ += amount;
+			break;
+		}
+		break;
 	}
 
 	TransformData newData = {

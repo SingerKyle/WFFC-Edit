@@ -13,25 +13,25 @@ ToolMain::ToolMain()
 	m_databaseConnection = NULL;
 
 	//zero input commands
-	bool forward = false;
-	bool back = false;
-	bool right = false;
-	bool left = false;
-	bool rotRight = false;
-	bool rotLeft = false;
-	bool up = false;
-	bool down = false;
+	m_toolInputCommands.forward = false;
+	m_toolInputCommands.back = false;
+	m_toolInputCommands.right = false;
+	m_toolInputCommands.left = false;
+	m_toolInputCommands.rotRight = false;
+	m_toolInputCommands.rotLeft = false;
+	m_toolInputCommands.up = false;
+	m_toolInputCommands.down = false;
 
 	// Editor Controls
-	bool isShiftDown = false;
+	m_toolInputCommands.isShiftDown = false;
 
 	// Mouse Controls
-	bool mouse_LB_Down = false;
-	bool mouse_RB_Down = false;
+	m_toolInputCommands.mouse_LB_Down = false;
+	m_toolInputCommands.mouse_RB_Down = false;
 
 	// Camera movement - mouse 
-	int mouse_X = 0;
-	int mouse_Y = 0;
+	m_toolInputCommands.mouse_X = 0;
+	m_toolInputCommands.mouse_Y = 0;
 	
 	WindowOpen = false;
 }
@@ -320,53 +320,38 @@ void ToolMain::Tick(MSG *msg)
 		// GIZMO STUFF
 		if (!m_selectedObjects.empty() && !m_d3dRenderer.GetGizmo()->GetDragging())
 		{
-			int selectedID = m_selectedObjects[0];
+			int selectedID = m_selectedObjects.back();
 
 			// Find the selected object in the scene graph
-			SceneObject* selectedObject = nullptr;
+			SceneObject* selectedObject = &m_sceneGraph[selectedID];
 
-			for (auto& obj : m_sceneGraph)
-			{
-				if (obj.ID == selectedID) // Assuming m_ID exists and matches correctly
-				{
-					selectedObject = &obj;
-					break;
-				}
-			}
-
-			if (selectedObject != nullptr)
-			{
-				// Set gizmo position to selected object's position
-				m_d3dRenderer.GetGizmo()->SetPosition(DirectX::SimpleMath::Vector3(selectedObject->posX, selectedObject->posY, selectedObject->posZ));
-
-			}
+			// Set gizmo position to selected object's position
+			m_d3dRenderer.GetGizmo()->SetPosition(DirectX::SimpleMath::Vector3(selectedObject->posX, selectedObject->posY, selectedObject->posZ));
+			m_d3dRenderer.GetGizmo()->SetRotation(DirectX::SimpleMath::Vector3(selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ));
+			m_d3dRenderer.GetGizmo()->SetScale(DirectX::SimpleMath::Vector3(selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ));
 		}
 		else if (m_toolInputCommands.mouse_LB_Down && !m_selectedObjects.empty())
 		{
-			int selectedID = m_selectedObjects[0];
+			int selectedID = m_selectedObjects.back();
 
 			// Find the selected object in the scene graph
-			SceneObject* selectedObject = nullptr;
+			SceneObject* selectedObject = &m_sceneGraph[selectedID];
 
-			for (auto& obj : m_sceneGraph)
-			{
-				if (obj.ID == selectedID) // Assuming m_ID exists and matches correctly
-				{
-					selectedObject = &obj;
-					break;
-				}
-			}
+			// Update object position based on gizmo movement
+			DirectX::SimpleMath::Vector3 newPosition = m_d3dRenderer.GetGizmo()->GetPosition();
 
-			if (selectedObject != nullptr)
-			{
-				// Update object position based on gizmo movement
-				DirectX::SimpleMath::Vector3 newPosition = m_d3dRenderer.GetGizmo()->GetPosition();
+			// Update the selected object's position
+			selectedObject->posX = newPosition.x;
+			selectedObject->posY = newPosition.y;
+			selectedObject->posZ = newPosition.z;
 
-				// Update the selected object's position
-				selectedObject->posX = newPosition.x;
-				selectedObject->posY = newPosition.y;
-				selectedObject->posZ = newPosition.z;
-			}
+			selectedObject->rotX = m_d3dRenderer.GetGizmo()->GetRotation().x;
+			selectedObject->rotY = m_d3dRenderer.GetGizmo()->GetRotation().y;
+			selectedObject->rotZ = m_d3dRenderer.GetGizmo()->GetRotation().z;
+
+			selectedObject->scaX = m_d3dRenderer.GetGizmo()->GetScale().x;
+			selectedObject->scaY = m_d3dRenderer.GetGizmo()->GetScale().y;
+			selectedObject->scaZ = m_d3dRenderer.GetGizmo()->GetScale().z;
 		}
 
 
@@ -493,7 +478,18 @@ void ToolMain::UpdateInput(MSG * msg)
 	}
 	else m_toolInputCommands.isShiftDown = false;
 
-	//WASD
+	if (m_keyArray['1'])
+	{
+		m_toolInputCommands.translationNum = 1;
+	}
+	else if (m_keyArray['2'])
+	{
+		m_toolInputCommands.translationNum = 2;
+	}
+	else if (m_keyArray['3'])
+	{
+		m_toolInputCommands.translationNum = 3;
+	}
 }
 
 void ToolMain::OnWindowStatusChanged(bool IsWindowOpen)

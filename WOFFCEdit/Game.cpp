@@ -273,23 +273,6 @@ void Game::Render()
 		const XMVECTORF32 yaxis = { 0.f, 0.f, 512.f };
 		DrawGrid(xaxis, yaxis, g_XMZero, 512, 512, Colors::Gray);
 	}
-	//CAMERA POSITION ON HUD
-	m_sprites->Begin();
-	WCHAR   Buffer[256];
-	std::wstring var = L"Cam X: " + std::to_wstring(m_camera->GetPosition().x) + L"Cam Z: " + std::to_wstring(m_camera->GetPosition().z);
-	m_font->DrawString(m_sprites.get(), var.c_str() , XMFLOAT2(100, 10), Colors::Yellow);
-
-	// Also display gizmo position
-	if (m_selectedObjects.size() > 0) {
-		std::wstring gizmoPos = L"Gizmo: " + std::to_wstring(m_gizmo->GetPosition().x) +
-			L", " + std::to_wstring(m_gizmo->GetPosition().y) +
-			L", " + std::to_wstring(m_gizmo->GetPosition().z);
-		m_font->DrawString(m_sprites.get(), gizmoPos.c_str(), XMFLOAT2(100, 30), Colors::Yellow);
-
-		std::wstring Object = L"Selected Object: " + std::to_wstring(m_selectedObjects[0]);
-		m_font->DrawString(m_sprites.get(), Object.c_str(), XMFLOAT2(100, 50), Colors::Yellow);
-	}
-	m_sprites->End();
 
 	//RENDER OBJECTS FROM SCENEGRAPH
 	int numRenderObjects = m_displayList.size();
@@ -371,7 +354,26 @@ void Game::Render()
 	//Render the batch,  This is handled in the Display chunk becuase it has the potential to get complex
 	m_displayChunk.RenderBatch(m_deviceResources);
 
+	//CAMERA POSITION ON HUD
+	m_sprites->Begin();
+	WCHAR   Buffer[256];
+	std::wstring var = L"Cam X: " + std::to_wstring(m_camera->GetPosition().x) + L"Cam Z: " + std::to_wstring(m_camera->GetPosition().z);
+	m_font->DrawString(m_sprites.get(), var.c_str(), XMFLOAT2(100, 10), Colors::Yellow);
+
+	// Also display gizmo position
+	if (m_selectedObjects.size() > 0) {
+		std::wstring gizmoPos = L"Gizmo: " + std::to_wstring(m_gizmo->GetPosition().x) +
+			L", " + std::to_wstring(m_gizmo->GetPosition().y) +
+			L", " + std::to_wstring(m_gizmo->GetPosition().z);
+		m_font->DrawString(m_sprites.get(), gizmoPos.c_str(), XMFLOAT2(100, 30), Colors::Yellow);
+
+		std::wstring Object = L"Selected Object: " + std::to_wstring(m_selectedObjects[0]);
+		m_font->DrawString(m_sprites.get(), Object.c_str(), XMFLOAT2(100, 50), Colors::Yellow);
+	}
+	m_sprites->End();
+
     m_deviceResources->Present();
+
 }
 
 // Helper method to clear the back buffers.
@@ -502,11 +504,6 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		m_displayList.clear();		//if not, empty it
 	}
 
-	if (!m_highlightList.empty())		//is the vector empty
-	{
-		m_highlightList.clear();		//if not, empty it
-	}
-
 	//for every item in the scenegraph
 	int numObjects = SceneGraph->size();
 	for (int i = 0; i < numObjects; i++)
@@ -574,7 +571,8 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		newDisplayObject.m_light_linear		= SceneGraph->at(i).light_linear;
 		newDisplayObject.m_light_quadratic	= SceneGraph->at(i).light_quadratic;
 		
-		if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
+		// do in render, compare selected and apply effect - no need to rebuild on click
+		/*if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
 		{
 			DisplayObject objectHighlight = newDisplayObject;
 
@@ -594,7 +592,7 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 				});
 
 			
-		}
+		}*/
 
 		m_displayList.push_back(newDisplayObject);
 	}
@@ -777,7 +775,8 @@ void Game::MousePicking(std::vector<int>& SelectedIDs)
 			//checking for ray intersection
 			if (m_displayList[i].m_model.get()->meshes[y]->boundingBox.Intersects(nearPoint, pickingVector, pickedDistance) && m_displayList[i].m_ID != -1)
 			{
-				selectedID = m_displayList[i].m_ID;
+				//selectedID = m_displayList[i].m_ID;
+				selectedID = i;
 			}
 		}
 	}

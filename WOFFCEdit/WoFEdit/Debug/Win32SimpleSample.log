@@ -1,3 +1,14 @@
-﻿  MFCMain.cpp
-  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
-  Win32SimpleSample.vcxproj -> D:\University\Year_4\CMP405\Submission\WFFC-Edit-master\WOFFCEdit\Debug\WoFEdit.exe
+﻿  Gizmo.cpp
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(148,84): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(148,68): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(149,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(149,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(151,122): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(151,96): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(152,120): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(152,94): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(191,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(191,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(249,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Gizmo.cpp(249,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Win32SimpleSample.vcxproj -> D:\LocalWorkDir\2100888\WFFC-Edit\WOFFCEdit\Debug\WoFEdit.exe

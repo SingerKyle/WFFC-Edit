@@ -7,6 +7,12 @@ Gizmo::Gizmo() : m_position(Vector3(0,0,0)), m_mode(Mode::Translate), m_activeAx
     m_gizmoSpace = GizmoSpace::World;
 
     m_active = true;
+
+    posMultiplier = 1;
+    rotMultiplier = 0;
+    scaMultiplier = 0;
+
+    m_mode = Mode::Translate;
 }
 
 Gizmo::~Gizmo()
@@ -29,6 +35,36 @@ void Gizmo::Update(InputCommands* input, const Matrix& view, const Matrix& proj)
 		m_dragging = false;
 		m_activeAxis = Axis::None;
 	}
+
+    if (translationNum != input->translationNum)
+    {
+        translationNum = input->translationNum;
+
+        switch (translationNum)
+        {
+        case 1:
+            m_mode = Mode::Translate;
+            posMultiplier = 1;
+            rotMultiplier = 0;
+            scaMultiplier = 0;
+            break;
+        case 2:
+            m_mode = Mode::Rotate;
+            posMultiplier = 0;
+            rotMultiplier = 1;
+            scaMultiplier = 0;
+            break;
+        case 3:
+            m_mode = Mode::Scale;
+            posMultiplier = 0;
+            rotMultiplier = 0;
+            scaMultiplier = 1;
+            break;
+        default:
+            m_mode = Mode::Translate;
+            break;
+        }
+    }
 }
 
 void Gizmo::Draw(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch)
@@ -36,7 +72,7 @@ void Gizmo::Draw(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch)
     if (!batch || !m_active) return;
 
     const float axisLength = 2.0f;
-    const float shaftWidth = 0.1f; // a thinner shaft for better scale
+    const float shaftWidth = 0.2f; // a thinner shaft for better scale
 
     Vector3 position = m_position;
 
@@ -154,6 +190,8 @@ void Gizmo::PickAxis(InputCommands* input, const Matrix& view, const Matrix& pro
         m_dragging = true;
         m_startMousePos = Vector2(input->mouse_X, input->mouse_Y);
         m_startObjectPos = m_position;
+        m_startObjectRot = m_rotation;
+        m_startObjectSca = m_scale;
     }
 }
 
@@ -203,15 +241,39 @@ void Gizmo::SetActive(bool active)
         m_position = Vector3::Zero;
     }
 }
+
 void Gizmo::Drag(InputCommands* input, const Matrix& view, const Matrix& proj)
 {
-	Vector2 mouseDelta = Vector2(input->mouse_X, input->mouse_Y) - m_startMousePos;
-	float dragAmount = mouseDelta.Length() * 0.01f; // Adjust sensitivity
 
-	if (m_activeAxis == Axis::X)
-		m_position.x = m_startObjectPos.x + dragAmount * (mouseDelta.x > 0 ? 1 : -1);
+
+	Vector2 mouseDelta = Vector2(input->mouse_X, input->mouse_Y) - m_startMousePos;
+	float dragAmount = mouseDelta.Length() * 0.05f; // Adjust sensitivity
+
+
+	/*if (m_activeAxis == Axis::X)
+		m_position.x = m_startObjectPos.x + dragAmount * (mouseDelta.x < 0 ? 1 : -1);
 	else if (m_activeAxis == Axis::Y)
 		m_position.y = m_startObjectPos.y + dragAmount * (mouseDelta.y < 0 ? 1 : -1); // Y is inverted
 	else if (m_activeAxis == Axis::Z)
-		m_position.z = m_startObjectPos.z + dragAmount * (mouseDelta.x > 0 ? 1 : -1);
+		m_position.z = m_startObjectPos.z + dragAmount * (mouseDelta.x > 0 ? 1 : -1);*/
+
+    if (m_activeAxis == Axis::X)
+    {
+        m_position.x = posMultiplier > 0 ? (m_startObjectPos.x + dragAmount * (mouseDelta.x < 0 ? 1 : -1)) * posMultiplier : m_position.x;
+        m_rotation.x = rotMultiplier > 0 ? (m_startObjectRot.x + (dragAmount * 5) * (mouseDelta.y < 0 ? 1 : -1)) * rotMultiplier : m_rotation.x;
+        m_scale.x = scaMultiplier > 0 ? (m_startObjectSca.x + dragAmount * (mouseDelta.x < 0 ? 1 : -1)) * scaMultiplier : m_scale.x;
+    }
+    else if (m_activeAxis == Axis::Y)
+    {
+        m_position.y = posMultiplier > 0 ? m_startObjectPos.y + dragAmount * (mouseDelta.y < 0 ? 1 : -1) * posMultiplier : m_position.y;
+        m_rotation.y = rotMultiplier > 0 ? m_startObjectRot.y + (dragAmount * 5) * (mouseDelta.y < 0 ? 1 : -1) * rotMultiplier : m_rotation.y;
+        m_scale.y = scaMultiplier > 0 ? m_startObjectSca.y + dragAmount * (mouseDelta.y < 0 ? 1 : -1) * scaMultiplier : m_scale.y;
+    }
+    else if (m_activeAxis == Axis::Z)
+    {
+        m_position.z = posMultiplier > 0 ? m_startObjectPos.z + dragAmount * (mouseDelta.x < 0 ? 1 : -1) * posMultiplier : m_position.z;
+        m_rotation.z = rotMultiplier > 0 ? m_startObjectRot.z + (dragAmount * 5) * (mouseDelta.y > 0 ? 1 : -1) * rotMultiplier : m_rotation.z;
+        m_scale.z = scaMultiplier > 0 ? m_startObjectSca.z + dragAmount * (mouseDelta.x > 0 ? 1 : -1) * scaMultiplier : m_scale.z;
+    }
+
 }
