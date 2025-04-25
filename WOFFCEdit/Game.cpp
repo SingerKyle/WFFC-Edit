@@ -828,7 +828,7 @@ void Game::MousePicking(std::vector<int>& SelectedIDs)
 }
 void Game::GizmoPick()
 {
-	m_gizmo->Update(&m_InputCommands, m_view, m_projection);
+	m_gizmo->Update(&m_InputCommands, m_camera->GetViewMatrix(), m_projection);
 }
 #pragma endregion
 
