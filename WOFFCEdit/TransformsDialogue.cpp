@@ -51,7 +51,16 @@ void TransformsDialogue::UpdateFromSelectedObject()
 	scaleY = obj.scaY;
 	scaleZ = obj.scaZ;
 
+	std::wstring meshName(obj.model_path.begin(), obj.model_path.end());
+	m_meshPath.SetWindowTextW(meshName.c_str());
+
+	std::wstring textName(obj.tex_diffuse_path.begin(), obj.tex_diffuse_path.end());
+	m_textPath.SetWindowTextW(textName.c_str());
+
 	m_currentID.SetWindowTextW(std::to_wstring(*m_currentSelection).c_str());
+	m_chunkID.SetWindowTextW(std::to_wstring(obj.chunk_ID).c_str());
+	std::wstring wideName(obj.name.begin(), obj.name.end());
+	m_objectName.SetWindowTextW(wideName.c_str());
 
 	m_posX.SetWindowTextW(std::to_wstring(posX).c_str());
 	m_posY.SetWindowTextW(std::to_wstring(posY).c_str());
@@ -71,7 +80,7 @@ void TransformsDialogue::End()
 {
 	Main->OnDialogueBoxDestroyed();
 
-	DestroyWindow();	//destory the window properly.  INcluding the links and pointers created.  THis is so the dialogue can start again. 
+	DestroyWindow();	//destroy the window properly
 }
 
 void TransformsDialogue::OnClose()
@@ -94,34 +103,7 @@ void TransformsDialogue::OnContextMenu(CWnd* pWnd, CPoint point)
 		CMenu* pPopup = menu.GetSubMenu(0);  // Get the submenu (index 0)
 		if (pPopup)
 		{
-			// Determine which control was clicked (static text control)
 			UINT nID = pWnd->GetDlgCtrlID();
-
-			// Enable the menu items based on the clicked control
-			if (nID == IDC_POS)
-			{
-				//pPopup->EnableMenuItem(ID_UNDO, MF_ENABLED); // Enable Undo for Location
-				//pPopup->EnableMenuItem(ID_REDO, MF_ENABLED); // Enable Redo for Location
-				//pPopup->EnableMenuItem(ID_RESET_TRANSFORMS, MF_ENABLED); // Enable Reset for Location
-			}
-			else if (nID == IDC_ROT)
-			{
-				//pPopup->EnableMenuItem(ID_UNDO, MF_ENABLED); // Enable Undo for Rotation
-				//pPopup->EnableMenuItem(ID_REDO, MF_ENABLED); // Enable Redo for Rotation
-				//pPopup->EnableMenuItem(ID_RESET_TRANSFORMS, MF_ENABLED); // Enable Reset for Rotation
-			}
-			else if (nID == IDC_SCALE)
-			{
-				//pPopup->EnableMenuItem(ID_UNDO, MF_ENABLED); // Enable Undo for Scale
-				//pPopup->EnableMenuItem(ID_REDO, MF_ENABLED); // Enable Redo for Scale
-				//pPopup->EnableMenuItem(ID_RESET_TRANSFORMS, MF_ENABLED); // Enable Reset for Scale
-			}
-			else
-			{
-				//pPopup->EnableMenuItem(ID_UNDO, MF_DISABLED); // Disable Undo
-				//pPopup->EnableMenuItem(ID_REDO, MF_DISABLED); // Disable Redo
-				//pPopup->EnableMenuItem(ID_RESET_TRANSFORMS, MF_DISABLED); // Disable Reset
-			}
 
 			pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 		}
@@ -145,7 +127,12 @@ void TransformsDialogue::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 
-	// Map your CEdit controls here
+	// model and texture paths
+	DDX_Control(pDX, IDC_MESH_PATH, m_meshPath);
+	DDX_Control(pDX, IDC_TEX_PATH, m_textPath);
+	
+	// Transforms
+
 	DDX_Control(pDX, IDC_EDIT_POS_X, m_posX);
 	DDX_Control(pDX, IDC_EDIT_POS_Y, m_posY);
 	DDX_Control(pDX, IDC_EDIT_POS_Z, m_posZ);
@@ -158,8 +145,12 @@ void TransformsDialogue::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_SCALE_Y, m_scaleY);
 	DDX_Control(pDX, IDC_EDIT_SCALE_Z, m_scaleZ);
 
+	// ID and name info
 	DDX_Control(pDX, IDC_CURRENT, m_currentID);
+	DDX_Control(pDX, IDC_CHUNKID, m_chunkID);
+	DDX_Control(pDX, IDC_OBJECT_NAME, m_objectName);
 
+	// buttons to add or remove
 	DDX_Control(pDX, IDC_BTN_PLUS, m_plusButton);
 	DDX_Control(pDX, IDC_BTN_MINUS, m_minusButton);
 
@@ -169,6 +160,8 @@ void TransformsDialogue::DoDataExchange(CDataExchange* pDX)
 BOOL TransformsDialogue::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
+	m_FileSelectDialogue = new FileSelect();
 
 	UpdateFromSelectedObject();
 	return TRUE;
@@ -266,7 +259,20 @@ BEGIN_MESSAGE_MAP(TransformsDialogue, CDialogEx)
 	ON_COMMAND(ID_UNDO, &TransformsDialogue::OnUndo)
 	ON_COMMAND(ID_REDO, &TransformsDialogue::OnRedo)
 	//ON_COMMAND(ID_RESET_TRANSFORMS, &TransformsDialogue::OnResetTransforms)
+	ON_EN_CHANGE(IDC_EDIT_POS_X, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_POS_Y, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_POS_Z, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_ROT_X, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_ROT_Y, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_ROT_Z, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_SCALE_X, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_SCALE_Y, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_EDIT_SCALE_Z, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_OBJECT_NAME, &TransformsDialogue::OnEditChanged)
+	ON_EN_CHANGE(IDC_CHUNKID, &TransformsDialogue::OnEditChanged)
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_MESH_SELECT, &TransformsDialogue::OnBnClickedMeshSelect)
+	ON_BN_CLICKED(IDC_TEX_SELECT, &TransformsDialogue::OnBnClickedTexSelect)
 END_MESSAGE_MAP()
 
 void TransformsDialogue::OnOperationPlus()
@@ -448,4 +454,129 @@ void TransformsDialogue::OnTransformAmountClicked(UINT nID)
 
 	UpdateFromSelectedObject(); // Refresh the UI
 	OnChangeTransform();
+}
+
+void TransformsDialogue::OnEditChanged()
+{
+	HWND hWndCtrl = ::GetFocus(); // Get which edit box is currently focused
+	if (hWndCtrl)
+	{
+		UINT nCtrlID = ::GetDlgCtrlID(hWndCtrl); // Now you have the control ID
+
+		CString value;
+		SceneObject& obj = m_sceneGraph->at(*m_currentSelection);
+
+		switch (nCtrlID)
+		{
+		case IDC_EDIT_POS_X:
+			m_posX.GetWindowTextW(value);
+			obj.posX = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_POS_Y:
+			m_posY.GetWindowTextW(value);
+			obj.posY = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_POS_Z:
+			m_posZ.GetWindowTextW(value);
+			obj.posZ = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_ROT_X:
+			m_rotX.GetWindowTextW(value);
+			obj.rotX = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_ROT_Y:
+			m_rotY.GetWindowTextW(value);
+			obj.rotY = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_ROT_Z:
+			m_rotZ.GetWindowTextW(value);
+			obj.rotZ = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_SCALE_X:
+			m_scaleX.GetWindowTextW(value);
+			obj.scaX = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_SCALE_Y:
+			m_scaleY.GetWindowTextW(value);
+			obj.scaY = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_EDIT_SCALE_Z:
+			m_scaleZ.GetWindowTextW(value);
+			obj.scaZ = std::stof(std::wstring(value));
+			OnChangeTransform();
+			break;
+
+		case IDC_OBJECT_NAME:
+		{
+			m_objectName.GetWindowTextW(value);
+			std::wstring wstr(value);
+			obj.name = std::string(wstr.begin(), wstr.end());
+			OnChangeTransform();
+			break;
+		}
+		case IDC_MESH_PATH:
+			m_meshPath.GetWindowTextW(value);
+			obj.model_path = std::stoi(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_TEX_PATH:
+			m_textPath.GetWindowTextW(value);
+			obj.tex_diffuse_path = std::stoi(std::wstring(value));
+			OnChangeTransform();
+			break;
+		case IDC_CHUNKID:
+			m_chunkID.GetWindowTextW(value);
+			obj.chunk_ID = std::stoi(std::wstring(value));
+			OnChangeTransform();
+			break;
+		default:
+			break;
+		}
+
+		
+	}
+}
+
+
+
+void TransformsDialogue::OnBnClickedMeshSelect()
+{
+	if (m_FileSelectDialogue) 
+	{
+		if (IsWindow(m_FileSelectDialogue->GetSafeHwnd())) 
+		{
+			m_FileSelectDialogue->DestroyWindow();
+		}
+
+		m_FileSelectDialogue->Create(IDD_SELECT_FILE);
+		m_FileSelectDialogue->ShowWindow(SW_SHOW);
+
+		m_FileSelectDialogue->SetObjectData(&m_meshPath, L".cmo");
+	}
+}
+
+
+void TransformsDialogue::OnBnClickedTexSelect()
+{
+	if (m_FileSelectDialogue) 
+	{
+
+		if (IsWindow(m_FileSelectDialogue->GetSafeHwnd()))
+		{
+			m_FileSelectDialogue->DestroyWindow();
+		}
+
+		m_FileSelectDialogue->Create(IDD_SELECT_FILE);
+		m_FileSelectDialogue->ShowWindow(SW_SHOW);
+
+		m_FileSelectDialogue->SetObjectData(&m_textPath, L".dds");
+	}
 }

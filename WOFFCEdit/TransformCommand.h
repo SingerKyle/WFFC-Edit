@@ -1,3 +1,6 @@
+#ifndef TRANSFORM_COMMAND_H
+#define TRANSFORM_COMMAND_H
+
 #include "SceneObject.h"
 #include "ICommand.h"
 
@@ -12,26 +15,31 @@ class TransformCommand : public CommandInterface
 {
 public:
     TransformCommand(SceneObject* obj, const TransformData& oldData, const TransformData& newData)
-        : m_obj(obj), m_oldData(oldData), m_newData(newData) {
+        : m_obj(obj), m_oldData(oldData), m_newData(newData) 
+    {
     }
 
-    void Execute() override {
+    void Execute() override 
+    {
         // Apply new data to object
         ApplyTransformData(m_newData);
     }
 
-    void Undo() override {
+    void Undo() override 
+    {
         // Revert object to old data
         ApplyTransformData(m_oldData);
     }
 
-    void Redo() override {
+    void Redo() override 
+    {
         // Reapply new data (same as Execute)
         ApplyTransformData(m_newData);
     }
 
 private:
-    void ApplyTransformData(const TransformData& data) {
+    void ApplyTransformData(const TransformData& data) 
+    {
         m_obj->posX = data.posX;
         m_obj->posY = data.posY;
         m_obj->posZ = data.posZ;
@@ -48,3 +56,5 @@ private:
     TransformData m_oldData;
     TransformData m_newData;
 };
+
+#endif

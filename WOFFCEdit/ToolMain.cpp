@@ -2,6 +2,12 @@
 #include "resource.h"
 #include <vector>
 #include <sstream>
+#include "TransformCommand.h"
+#include "PasteCommand.h"
+#include "CutCommand.h"
+#include "PasteCommand.h"
+#include "DeleteCommand.h"
+#include "CutCommand.h"
 
 //
 //ToolMain Class
@@ -304,6 +310,8 @@ void ToolMain::Tick(MSG *msg)
 	//Renderer Update Call
 	m_d3dRenderer.Tick(&m_toolInputCommands);
 
+	
+
 	if (m_toolInputCommands.mouse_LB_Down && !WindowOpen)
 	{
 		m_d3dRenderer.GizmoPick();
@@ -320,6 +328,7 @@ void ToolMain::Tick(MSG *msg)
 		// GIZMO STUFF
 		if (!m_selectedObjects.empty() && !m_d3dRenderer.GetGizmo()->GetDragging())
 		{
+
 			int selectedID = m_selectedObjects.back();
 
 			// Find the selected object in the scene graph
@@ -329,6 +338,15 @@ void ToolMain::Tick(MSG *msg)
 			m_d3dRenderer.GetGizmo()->SetPosition(DirectX::SimpleMath::Vector3(selectedObject->posX, selectedObject->posY, selectedObject->posZ));
 			m_d3dRenderer.GetGizmo()->SetRotation(DirectX::SimpleMath::Vector3(selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ));
 			m_d3dRenderer.GetGizmo()->SetScale(DirectX::SimpleMath::Vector3(selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ));
+
+			TransformData OldData = {
+				selectedObject->posX, selectedObject->posY, selectedObject->posZ,
+				selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ,
+				selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ
+			};
+
+			m_oldData = OldData;
+
 		}
 		else if (m_toolInputCommands.mouse_LB_Down && !m_selectedObjects.empty())
 		{
@@ -352,6 +370,8 @@ void ToolMain::Tick(MSG *msg)
 			selectedObject->scaX = m_d3dRenderer.GetGizmo()->GetScale().x;
 			selectedObject->scaY = m_d3dRenderer.GetGizmo()->GetScale().y;
 			selectedObject->scaZ = m_d3dRenderer.GetGizmo()->GetScale().z;
+
+			m_shouldStoreObjectPosition = true;
 		}
 
 
@@ -363,6 +383,29 @@ void ToolMain::Tick(MSG *msg)
 		{
 			m_toolInputCommands.isObjectSelected = true;
 		}*/
+
+	}
+	else if (!m_toolInputCommands.mouse_LB_Down && m_shouldStoreObjectPosition)
+	{
+		int selectedID = m_selectedObjects.back();
+
+		// Find the selected object in the scene graph
+		SceneObject* selectedObject = &m_sceneGraph[selectedID];
+
+		// Update object position based on gizmo movement
+		DirectX::SimpleMath::Vector3 newPosition = m_d3dRenderer.GetGizmo()->GetPosition();
+
+		TransformData newData = {
+			selectedObject->posX, selectedObject->posY, selectedObject->posZ,
+			selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ,
+			selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ
+		};
+
+		m_commandManager->ExecuteCommand(new TransformCommand(selectedObject, m_oldData, newData));
+
+		m_oldData = newData;
+
+		m_shouldStoreObjectPosition = false;
 
 	}
 
@@ -462,12 +505,12 @@ void ToolMain::UpdateInput(MSG * msg)
 	}
 	else m_toolInputCommands.rotLeft = false;
 	//rotation
-	if (m_keyArray[VK_SPACE])
+	if (m_keyArray[VK_SPACE] || m_keyArray['Q'])
 	{
 		m_toolInputCommands.up = true;
 	}
 	else m_toolInputCommands.up = false;
-	if (m_keyArray[VK_CONTROL])
+	if (m_keyArray['E'])
 	{
 		m_toolInputCommands.down = true;
 	}
@@ -489,6 +532,33 @@ void ToolMain::UpdateInput(MSG * msg)
 	else if (m_keyArray['3'])
 	{
 		m_toolInputCommands.translationNum = 3;
+	}
+
+	if (m_keyArray[VK_DELETE])
+	{
+		Delete();
+	}
+
+	if ((msg->message == WM_KEYDOWN) && (GetKeyState(VK_CONTROL) & 0x8000))
+	{
+		switch (msg->wParam)
+		{
+		case 'Z': 
+			Undo();
+			break;
+		case 'Y': 
+			Redo();
+			break;
+		case 'X':
+			Cut();
+			break;
+		case 'C':
+			Copy();
+			break;
+		case 'V':
+			Paste();
+			break;
+		}
 	}
 }
 
@@ -521,4 +591,87 @@ void ToolMain::OnWindowPositionChanged(WINDOWPOS newPos)
 Game& ToolMain::GetGame()
 {
 	return m_d3dRenderer;
+}
+
+void ToolMain::Undo()
+{
+	if (m_commandManager)
+	{
+		m_commandManager->Undo();
+
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+	}
+}
+
+void ToolMain::Redo()
+{
+	if (m_commandManager)
+	{
+		m_commandManager->Redo();
+
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+	}
+}
+
+void ToolMain::Cut()
+{
+	if (m_commandManager && !m_selectedObjects.empty())
+	{
+		int selectedID = m_selectedObjects.back();
+
+		m_cutCommand = new CutCommand(&m_sceneGraph, selectedID);
+		
+		m_commandManager->ExecuteCommand(m_cutCommand);
+
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+
+	}
+}
+
+void ToolMain::Copy()
+{
+	if (m_commandManager && !m_selectedObjects.empty())
+	{
+		int selectedID = m_selectedObjects.back();
+
+		// Find the selected object in the scene graph
+		SceneObject* selectedObject = &m_sceneGraph[selectedID];
+
+		m_copiedObject = *selectedObject;
+
+		m_hasCopiedData = true;
+	}
+}
+
+void ToolMain::Paste()
+{
+	if (m_commandManager && m_hasCopiedData)
+	{
+		m_commandManager->ExecuteCommand(new PasteCommand(&m_sceneGraph, m_copiedObject));
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+	}
+	else if (m_commandManager && m_cutCommand->GetCutObject())
+	{
+		m_commandManager->ExecuteCommand(new PasteCommand(&m_sceneGraph, *m_cutCommand->GetCutObject()));
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+	}
+
+}
+
+void ToolMain::Delete()
+{
+	if (m_commandManager && !m_selectedObjects.empty())
+	{
+		int selectedID = m_selectedObjects.back();
+
+		m_commandManager->ExecuteCommand(new DeleteCommand(&m_sceneGraph, selectedID));
+
+		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
+
+	}
+}
+
+void ToolMain::OnGizmoMove(SceneObject* Object, const Vector3& position, const Vector3& rotation, const Vector3& scale)
+{
+	
 }

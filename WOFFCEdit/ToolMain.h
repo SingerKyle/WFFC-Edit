@@ -9,6 +9,9 @@
 #include <vector>
 #include "Camera.h"
 #include <chrono>
+#include "TransformCommand.h"
+#include "CommandManager.h"
+#include "CutCommand.h"
 
 using namespace std::chrono;
 using namespace std::literals;
@@ -47,6 +50,20 @@ public: //methods
 
 	Game& GetGame();
 
+	void Undo();
+
+	void Redo();
+
+	void Cut();
+
+	void Copy();
+
+	void Paste();
+
+	void Delete();
+
+	inline void SetCommandManager(CommandManager* commandManager) { m_commandManager = commandManager; }
+
 public:	//variables
 	std::vector<SceneObject>    m_sceneGraph;	//our scenegraph storing all the objects in the current chunk
 	ChunkObject					m_chunk;		//our landscape chunk
@@ -54,10 +71,16 @@ public:	//variables
 	POINT						m_cursorPos{ 0, 0 };
 	RECT						m_screenDimensions;
 
+	TransformData				m_oldData;
+	TransformData				m_newData;
+	SceneObject					m_copiedObject;
+	CommandManager*				m_commandManager;
+	CutCommand*					m_cutCommand;
+
 private:	//methods
 	void	onContentAdded();
 
-
+	void OnGizmoMove(SceneObject* Object, const Vector3& position, const Vector3& rotation, const Vector3& scale);
 		
 private:	//variables
 	HWND	m_toolHandle;		//Handle to the  window
@@ -71,6 +94,8 @@ private:	//variables
 	int m_height;
 	int m_currentChunk;			//the current chunk of thedatabase that we are operating on.  Dictates loading and saving. 
 	bool WindowOpen;
+	bool m_shouldStoreObjectPosition;
+	bool m_hasCopiedData = false;
 	
 
 	std::chrono::steady_clock::time_point			m_leftMouseDownTime;

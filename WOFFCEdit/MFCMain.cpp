@@ -35,6 +35,8 @@ BOOL MFCMain::InitInstance()
 	m_frame->UpdateWindow();
 
 
+	m_commandManager = new CommandManager();
+
 	WindowOpen = false;
 
 	//get the rect from the MFC window so we can get its dimensions
@@ -46,8 +48,11 @@ BOOL MFCMain::InitInstance()
 	m_ToolSystem.onActionInitialise(m_toolHandle, m_width, m_height);
 
 	m_frame->m_DirXView.m_toolMain = &m_ToolSystem;
+	m_ToolSystem.SetCommandManager(m_commandManager);
 
 	LoadEditorSettings(L"CameraSettings.txt");
+
+
 
 	return TRUE;
 }
@@ -176,7 +181,7 @@ void MFCMain::Inspector()
 		m_ToolTransformsDialogue.SetMain(this);
 		m_ToolTransformsDialogue.SetGame(&m_ToolSystem.GetGame());
 		m_ToolTransformsDialogue.SetSelection(lastSelectedIndex);
-		m_ToolTransformsDialogue.SetCommandManager(&m_commandManager);
+		m_ToolTransformsDialogue.SetCommandManager(m_commandManager);
 		m_ToolTransformsDialogue.ShowWindow(SW_SHOW);
 
 		m_ToolTransformsDialogue.InitialiseWithSelection();

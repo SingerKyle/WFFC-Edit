@@ -33,7 +33,7 @@ private:
 	CRect WindowRECT;	//Window area rectangle. 
 	SelectDialogue m_ToolSelectDialogue;			//for modeless dialogue, declare it here
 	TransformsDialogue m_ToolTransformsDialogue;
-	CommandManager m_commandManager;
+	CommandManager* m_commandManager;
 	EditorSettingsDialogue m_ToolEditorSettings;
 
 	int m_width;		

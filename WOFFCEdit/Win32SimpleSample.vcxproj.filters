@@ -77,6 +77,9 @@
     <ClCompile Include="TransformCommand.cpp" />
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="EditorSettingsDialogue.cpp" />
+    <ClCompile Include="FileSelect.cpp">
+      <Filter>MFC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h">
@@ -141,6 +144,12 @@
     <ClInclude Include="TransformCommand.h" />
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="EditorSettingsDialogue.h" />
+    <ClInclude Include="DeleteCommand.h" />
+    <ClInclude Include="CutCommand.h" />
+    <ClInclude Include="PasteCommand.h" />
+    <ClInclude Include="FileSelect.h">
+      <Filter>MFC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

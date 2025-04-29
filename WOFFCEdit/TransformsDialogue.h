@@ -5,6 +5,7 @@
 #include "SceneObject.h"
 #include <vector>
 #include "CommandManager.h"
+#include "FileSelect.h"
 
 class MFCMain;
 class Game;
@@ -55,6 +56,8 @@ protected:
 
 	CommandManager* m_commandManager;
 
+	class FileSelect* m_FileSelectDialogue;
+
 private:
 	std::vector<SceneObject>* m_sceneGraph = nullptr;
 	int m_selectedIndex = -1;
@@ -70,7 +73,13 @@ private:
 	// Scale fields
 	CEdit m_scaleX, m_scaleY, m_scaleZ;
 
-	CEdit m_currentID;
+	// Pivot Point Field
+	CEdit m_pivotX, m_pivotY, m_pivotZ;
+
+	CEdit m_currentID, m_chunkID, m_objectName;
+
+	// MESH AND TEXTURE PATHS
+	CEdit m_meshPath, m_textPath;
 
 	CButton m_plusButton, m_minusButton;
 
@@ -93,5 +102,11 @@ public:
 	afx_msg void OnOperationPlus();
 	afx_msg void OnOperationMinus();
 	afx_msg void OnTransformAmountClicked(UINT nID);
+
+	afx_msg void OnEditChanged();
+
+
+	afx_msg void OnBnClickedMeshSelect();
+	afx_msg void OnBnClickedTexSelect();
 };
 
