@@ -80,6 +80,7 @@
     <ClCompile Include="FileSelect.cpp">
       <Filter>MFC</Filter>
     </ClCompile>
+    <ClCompile Include="SpawnObjectDialogue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h">
@@ -150,6 +151,7 @@
     <ClInclude Include="FileSelect.h">
       <Filter>MFC</Filter>
     </ClInclude>
+    <ClInclude Include="SpawnObjectDialogue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

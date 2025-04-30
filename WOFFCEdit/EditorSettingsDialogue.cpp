@@ -1,12 +1,14 @@
 #include "EditorSettingsDialogue.h"
 #include <fstream> 
 #include <string> 
+#include "MFCMain.h"
 
 IMPLEMENT_DYNAMIC(EditorSettingsDialogue, CDialogEx)
 
 BEGIN_MESSAGE_MAP(EditorSettingsDialogue, CDialogEx)
 	ON_BN_CLICKED(IDOK, &EditorSettingsDialogue::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &EditorSettingsDialogue::OnBnClickedCancel)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 EditorSettingsDialogue::EditorSettingsDialogue(CWnd* pParent) 
@@ -18,6 +20,23 @@ EditorSettingsDialogue::EditorSettingsDialogue(CWnd* pParent)
 EditorSettingsDialogue::~EditorSettingsDialogue()
 {
 
+}
+
+void EditorSettingsDialogue::OnClose()
+{
+	if (m_main != nullptr)
+	{
+		m_main->OnDialogueBoxDestroyed();
+	}
+
+	DestroyWindow();
+
+	CDialogEx::OnClose();
+}
+
+void EditorSettingsDialogue::SetMain(MFCMain* main)
+{
+	m_main = main;
 }
 
 void EditorSettingsDialogue::SetObjectData(ToolMain* toolMain)
@@ -123,6 +142,10 @@ void EditorSettingsDialogue::OnBnClickedOk()
 		camSettings.UpdateCamValues(_ttof(moveSpeed), _ttof(camRotRate), invertCamera);
 		camSettings.SaveToFile(L"CameraSettings.txt");
 		//m_Tool->ResizeWindow(_ttoi(ResX), _ttoi(ResY));
+		if (m_main != nullptr)
+		{
+			m_main->OnDialogueBoxDestroyed();
+		}
 		CDialogEx::OnOK();
 		DestroyWindow();
 	}
@@ -132,8 +155,13 @@ void EditorSettingsDialogue::OnBnClickedOk()
 void EditorSettingsDialogue::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
+	if (m_main != nullptr)
+	{
+		m_main->OnDialogueBoxDestroyed();
+	}
 	CDialogEx::OnCancel();
 	DestroyWindow();
+
 }
 
 bool FEditorSettings::LoadFromFile(const std::wstring& filename)

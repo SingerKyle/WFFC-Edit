@@ -372,6 +372,8 @@ void Game::Render()
 	}
 	m_sprites->End();
 
+	
+
     m_deviceResources->Present();
 
 }
@@ -572,27 +574,22 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		newDisplayObject.m_light_quadratic	= SceneGraph->at(i).light_quadratic;
 		
 		// do in render, compare selected and apply effect - no need to rebuild on click
-		/*if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), SceneGraph->at(i).ID) != m_selectedObjects.end())
+		if (std::find(m_selectedObjects.begin(), m_selectedObjects.end(), i) != m_selectedObjects.end())
 		{
-			DisplayObject objectHighlight = newDisplayObject;
-
-			newDisplayObject.m_ID = -1;
+			// Apply wireframe + highlight effect for this object
 			newDisplayObject.m_wireframe = true;
 
-			newDisplayObject.m_model->UpdateEffects([&](IEffect* effect)
+			newDisplayObject.m_model->UpdateEffects([](IEffect* effect)
 				{
-					auto fog = dynamic_cast<IEffectFog*>(effect);
-
-					if (fog) {
+					if (auto fog = dynamic_cast<IEffectFog*>(effect))
+					{
 						fog->SetFogEnabled(true);
 						fog->SetFogStart(0);
 						fog->SetFogEnd(1);
 						fog->SetFogColor(Colors::GhostWhite);
 					}
 				});
-
-			
-		}*/
+		}
 
 		m_displayList.push_back(newDisplayObject);
 	}

@@ -64,10 +64,13 @@ public: //methods
 
 	inline void SetCommandManager(CommandManager* commandManager) { m_commandManager = commandManager; }
 
+	void SetSelectedFromMenu(int m_selectedObject);
+
 public:	//variables
 	std::vector<SceneObject>    m_sceneGraph;	//our scenegraph storing all the objects in the current chunk
 	ChunkObject					m_chunk;		//our landscape chunk
 	std::vector<int>			m_selectedObjects;  //ID of current Selection
+	int							m_selectedObject = -1;
 	POINT						m_cursorPos{ 0, 0 };
 	RECT						m_screenDimensions;
 

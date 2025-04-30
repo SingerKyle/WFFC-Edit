@@ -5,6 +5,8 @@
 #include "SceneObject.h"
 #include <vector>
 
+class ToolMain;
+class MFCMain;
 // SelectDialogue dialog
 
 class SelectDialogue : public CDialogEx
@@ -16,6 +18,11 @@ public:
 	SelectDialogue(CWnd* pParent = NULL);
 	virtual ~SelectDialogue();
 	void SetObjectData(std::vector<SceneObject>* SceneGraph, int * Selection);	//passing in pointers to the data the class will operate on.
+
+
+	void SetTool(ToolMain* tool);
+
+	void SetMain(MFCMain* main);
 	
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -30,6 +37,8 @@ protected:
 	std::vector<SceneObject> * m_sceneGraph;
 	int * m_currentSelection;
 	
+	ToolMain* m_tool = nullptr;
+	MFCMain* m_main;
 
 	DECLARE_MESSAGE_MAP()
 public:

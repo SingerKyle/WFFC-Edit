@@ -3,6 +3,8 @@
 #include "afxdialogex.h"
 #include "ToolMain.h"
 
+class MFCMain;
+
 struct FEditorSettings
 {
 	float moveSpeed = 150.0f;
@@ -28,6 +30,9 @@ public:
 
 	void SetLoadedValues();
 
+	void OnClose();
+
+	void SetMain(MFCMain* main);
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -42,6 +47,7 @@ protected:
 private:
 
 	ToolMain* m_Tool;
+	MFCMain* m_main;
 	void SetInitialText(CEdit& box, float value);
 
 public:

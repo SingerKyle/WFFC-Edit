@@ -328,9 +328,9 @@ void Gizmo::Drag(InputCommands* input, const Matrix& view, const Matrix& proj)
     }
     else if (m_activeAxis == Axis::Z)
     {
-        if (posMultiplier > 0) m_position.z = (m_startObjectPos.z - dragAmount) * posMultiplier;
-        if (rotMultiplier > 0) m_rotation.z = (m_startObjectRot.z - dragAmount * 5.0f) * rotMultiplier;
-        if (scaMultiplier > 0) m_scale.z = (m_startObjectSca.z - dragAmount) * scaMultiplier;
+        if (posMultiplier > 0) m_position.z = (m_startObjectPos.z + dragAmount) * posMultiplier;
+        if (rotMultiplier > 0) m_rotation.z = (m_startObjectRot.z + dragAmount * 5.0f) * rotMultiplier;
+        if (scaMultiplier > 0) m_scale.z = (m_startObjectSca.z + dragAmount) * scaMultiplier;
     }
 }
 

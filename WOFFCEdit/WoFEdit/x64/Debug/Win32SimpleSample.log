@@ -1,0 +1,158 @@
+﻿  Camera.cpp
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Camera.cpp(20,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Camera.cpp(108,56): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Camera.cpp(109,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Camera.cpp(110,56): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  ChunkObject.cpp
+  CommandManager.cpp
+  DeviceResources.cpp
+  DisplayChunk.cpp
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(14,27): warning C4305: '=': truncation from 'double' to 'float'
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(15,49): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(73,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(74,185): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(74,81): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(94,10): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(152,10): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(174,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(189,30): warning C4101: 'index4': unreferenced local variable
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(189,14): warning C4101: 'index2': unreferenced local variable
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(189,22): warning C4101: 'index3': unreferenced local variable
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\DisplayChunk.cpp(189,6): warning C4101: 'index1': unreferenced local variable
+  DisplayObject.cpp
+  EditorSettingsDialogue.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\EditorSettingsDialogue.cpp(141,50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\EditorSettingsDialogue.cpp(141,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\EditorSettingsDialogue.cpp(142,54): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\EditorSettingsDialogue.cpp(142,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  FileSelect.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  Game.cpp
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(278,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(288,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(287,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(286,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(306,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(305,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(304,91): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(359,10): warning C4101: 'Buffer': unreferenced local variable
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(510,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(743,82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(743,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(744,81): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(744,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(755,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(754,147): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(754,98): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(761,111): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(761,85): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(763,109): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Game.cpp(763,83): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+  Gizmo.cpp
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(149,84): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(149,68): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(150,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(150,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(152,122): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(152,96): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(153,120): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(153,94): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(192,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(192,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(295,117): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(295,91): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(296,113): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(296,87): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(303,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\Gizmo.cpp(303,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  ICommand.cpp
+  Main.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MFCFrame.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MFCRenderFrame.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  pch.cpp
+  MFCMain.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  SceneObject.cpp
+  SelectDialogue.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\SelectDialogue.cpp(43,22): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  SpawnObjectDialogue.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  ToolMain.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(111,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(112,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(113,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(114,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(115,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(116,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(117,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(118,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(119,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(131,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(132,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(133,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(137,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(138,47): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(139,42): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(143,50): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(144,50): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(154,57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(155,57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(156,57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(157,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(158,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(159,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(160,59): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(161,56): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(162,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(163,57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(223,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(424,6): warning C4101: 'mouseX': unreferenced local variable
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\ToolMain.cpp(425,6): warning C4101: 'mouseY': unreferenced local variable
+  Generating Code...
+  Compiling...
+  TransformCommand.cpp
+  TransformsDialogue.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xutility(4710,18): warning C4244: '=': conversion from 'wchar_t' to 'char', possible loss of data
+  (compiling source file 'TransformsDialogue.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xutility(4710,18):
+      the template instantiation context (the oldest one first) is
+          D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\TransformsDialogue.cpp(521,26):
+          see reference to function template instantiation 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)' being compiled
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\TransformsDialogue.cpp(521,13):
+              see the first reference to 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string' in 'TransformsDialogue::OnEditChanged'
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(793,17):
+          see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<wchar_t*,wchar_t*,_Size_type>(_Iter,const _Sent,_Size)' being compiled
+          with
+          [
+              _Size_type=unsigned __int64,
+              _Iter=wchar_t *,
+              _Sent=wchar_t *,
+              _Size=unsigned __int64
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(949,18):
+          see reference to function template instantiation '_OutIt *std::_Copy_n_unchecked4<wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)' being compiled
+          with
+          [
+              _OutIt=char *,
+              _Size=unsigned __int64,
+              _InIt=wchar_t *,
+              _SizeTy=unsigned __int64
+          ]
+  
+  Generating Code...
+  sqlite3.c
+D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\sqlite3.c(29693,7): warning C4996: 'GetVersionExW': was declared deprecated
+  Win32SimpleSample.vcxproj -> D:\University\Year_4\CMP405\WFFC-Edit\WOFFCEdit\x64\Debug\WoFEdit.exe

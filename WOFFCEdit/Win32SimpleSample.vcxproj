@@ -183,6 +183,7 @@
     <ClCompile Include="MFCMain.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="SelectDialogue.cpp" />
+    <ClCompile Include="SpawnObjectDialogue.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="ToolMain.cpp" />
     <ClCompile Include="TransformCommand.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="SelectDialogue.h" />
+    <ClInclude Include="SpawnObjectDialogue.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StepTimer.h" />

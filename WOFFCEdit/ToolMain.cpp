@@ -623,6 +623,7 @@ void ToolMain::Cut()
 		
 		m_commandManager->ExecuteCommand(m_cutCommand);
 
+
 		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
 
 	}
@@ -669,6 +670,43 @@ void ToolMain::Delete()
 		m_d3dRenderer.BuildDisplayList(&m_sceneGraph);
 
 	}
+}
+
+void ToolMain::SetSelectedFromMenu(int m_selectedObject)
+{
+	auto it = std::find(m_selectedObjects.begin(), m_selectedObjects.end(), m_selectedObject);
+	bool isAlreadySelected = (it != m_selectedObjects.end());
+
+	
+	if (isAlreadySelected)
+	{
+		// Deselect if already selected
+		m_selectedObjects.erase(it);
+	}
+	else
+	{
+		// Add to selection
+		m_selectedObjects.push_back(m_selectedObject);
+		m_d3dRenderer.SetSelectedObjects(m_selectedObjects);
+		int selectedID = m_selectedObjects.back();
+
+		// Find the selected object in the scene graph
+		SceneObject* selectedObject = &m_sceneGraph[selectedID];
+
+		// Set gizmo position to selected object's position
+		m_d3dRenderer.GetGizmo()->SetPosition(DirectX::SimpleMath::Vector3(selectedObject->posX, selectedObject->posY, selectedObject->posZ));
+		m_d3dRenderer.GetGizmo()->SetRotation(DirectX::SimpleMath::Vector3(selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ));
+		m_d3dRenderer.GetGizmo()->SetScale(DirectX::SimpleMath::Vector3(selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ));
+
+		TransformData OldData = {
+			selectedObject->posX, selectedObject->posY, selectedObject->posZ,
+			selectedObject->rotX, selectedObject->rotY, selectedObject->rotZ,
+			selectedObject->scaX, selectedObject->scaY, selectedObject->scaZ
+		};
+
+		m_oldData = OldData;
+	}
+
 }
 
 void ToolMain::OnGizmoMove(SceneObject* Object, const Vector3& position, const Vector3& rotation, const Vector3& scale)

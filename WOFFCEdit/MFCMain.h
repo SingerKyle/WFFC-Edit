@@ -11,6 +11,7 @@
 #include "SelectDialogue.h"
 #include "TransformsDialogue.h"
 #include "EditorSettingsDialogue.h"
+#include "SpawnObjectDialogue.h"
 
 
 class MFCMain : public CWinApp 
@@ -35,6 +36,7 @@ private:
 	TransformsDialogue m_ToolTransformsDialogue;
 	CommandManager* m_commandManager;
 	EditorSettingsDialogue m_ToolEditorSettings;
+	SpawnObjectDialogue m_SpawnObjectDialogue;
 
 	int m_width;		
 	int m_height;
@@ -49,6 +51,8 @@ private:
 	afx_msg void Inspector();
 
 	afx_msg void EditorSettings();
+
+	afx_msg void SpawnObject();
 	void OnDialogueBoxCreated();
 
 

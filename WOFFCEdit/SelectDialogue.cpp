@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "SelectDialogue.h"
+#include "ToolMain.h"
+#include "MFCMain.h"
 
 // SelectDialogue dialog
 
@@ -47,6 +49,15 @@ void SelectDialogue::SetObjectData(std::vector<SceneObject>* SceneGraph, int * s
 	}
 }
 
+void SelectDialogue::SetTool(ToolMain* tool)
+{
+	m_tool = tool;
+}
+
+void SelectDialogue::SetMain(MFCMain* main)
+{
+	m_main = main;
+}
 
 void SelectDialogue::DoDataExchange(CDataExchange* pDX)
 {
@@ -56,6 +67,8 @@ void SelectDialogue::DoDataExchange(CDataExchange* pDX)
 
 void SelectDialogue::End()
 {
+	//Select();
+	m_main->OnDialogueBoxDestroyed();
 	DestroyWindow();	//destory the window properly.  INcluding the links and pointers created.  THis is so the dialogue can start again. 
 }
 
@@ -67,6 +80,8 @@ void SelectDialogue::Select()
 	m_listBox.GetText(index, currentSelectionValue);
 
 	*m_currentSelection = _ttoi(currentSelectionValue);
+
+	m_tool->SetSelectedFromMenu(*m_currentSelection);
 
 }
 
@@ -124,6 +139,8 @@ void SelectDialogue::PostNcDestroy()
 void SelectDialogue::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
+	Select();
+	m_main->OnDialogueBoxDestroyed();
 	CDialogEx::OnOK();
 }
 

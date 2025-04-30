@@ -12,6 +12,7 @@ BEGIN_MESSAGE_MAP(MFCMain, CWinApp)
 	ON_COMMAND(ID_EDIT_OBJECTINSPECTOR, &MFCMain::Inspector)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_TOOL, &CMyFrame::OnUpdatePage)
 	ON_COMMAND(ID_SETTINGS_EDITOR_SETTINGS, &MFCMain::EditorSettings)
+	ON_COMMAND(ID_EDIT_CREATEOBJECT, &MFCMain::SpawnObject)
 END_MESSAGE_MAP()
 
 BOOL MFCMain::InitInstance()
@@ -160,7 +161,11 @@ void MFCMain::MenuEditSelect()
 	//modeless dialogue must be declared in the class.   If we do local it will go out of scope instantly and destroy itself
 	m_ToolSelectDialogue.Create(IDD_DIALOG1);	//Start up modeless
 	m_ToolSelectDialogue.ShowWindow(SW_SHOW);	//show modeless
-	m_ToolSelectDialogue.SetObjectData(&m_ToolSystem.m_sceneGraph, &m_ToolSystem.m_selectedObjects[0]);
+	m_ToolSelectDialogue.SetTool(&m_ToolSystem);
+	m_ToolSelectDialogue.SetMain(this);
+	m_ToolSelectDialogue.SetObjectData(&m_ToolSystem.m_sceneGraph, &m_ToolSystem.m_selectedObject);
+	
+	OnDialogueBoxCreated();
 }
 
 void MFCMain::ToolBarButton1()
@@ -194,8 +199,15 @@ void MFCMain::EditorSettings()
 	m_ToolEditorSettings.Create(IDD_EDITOR_SETTINGS);	//Start up modeless
 	m_ToolEditorSettings.ShowWindow(SW_SHOW);	//show modeless
 	m_ToolEditorSettings.SetObjectData(&m_ToolSystem);
+	m_ToolEditorSettings.SetMain(this);
 
 	OnDialogueBoxCreated();
+}
+
+void MFCMain::SpawnObject()
+{
+	m_SpawnObjectDialogue.Create(IDD_SPAWNOBJECT);
+	m_SpawnObjectDialogue.ShowWindow(SW_SHOW);
 }
 
 void MFCMain::OnDialogueBoxCreated()
